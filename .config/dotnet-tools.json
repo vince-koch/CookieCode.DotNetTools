@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "dotnet-prune": {
+      "version": "1.0.0",
+      "commands": [
+        "prune"
+      ]
+    },
+    "dotnet-cleanup": {
+      "version": "0.6.1",
+      "commands": [
+        "cleanup"
+      ]
+    }
+  }
+}

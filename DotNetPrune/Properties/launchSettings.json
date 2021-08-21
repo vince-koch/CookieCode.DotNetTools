@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "DotNetPrune": {
+      "commandName": "Project"
+    }
+  }
+}
