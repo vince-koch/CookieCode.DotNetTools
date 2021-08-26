@@ -18,6 +18,7 @@ Note:  This tool works by downloading Microsoft SysInternals handle.exe and pars
         <Company>Cookie Code</Company>
         <Authors>Vince Koch</Authors>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageTags>dotnet tool handle</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>
