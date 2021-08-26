@@ -1,6 +1,6 @@
 ﻿# dotnet-prune
 
-Removes all empty directories in a folder
+Removes all empty directories recursively, starting in the current working directory.
 
 **To install**
 ```
