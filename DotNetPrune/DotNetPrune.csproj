@@ -17,7 +17,8 @@
         <Authors>Vince Koch</Authors>
         <Company>Cookie Code</Company>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageTags>dotnet handle prune clean</PackageTags>
+        <PackageTags>dotnet tool prune clean</PackageTags>
+        <Version>1.1.0</Version>
     </PropertyGroup>
 
     <ItemGroup>
