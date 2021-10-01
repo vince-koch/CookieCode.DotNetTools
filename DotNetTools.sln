@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetHandle", "DotNetHandl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetZipSource", "DotNetZipSource\DotNetZipSource.csproj", "{38D7091C-B9BC-4BE0-B22A-0F96AAF5CA11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetHttpClient", "DotNetHttpClient\DotNetHttpClient.csproj", "{383E28CF-273D-4407-BC52-9BEF0758FE65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{38D7091C-B9BC-4BE0-B22A-0F96AAF5CA11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38D7091C-B9BC-4BE0-B22A-0F96AAF5CA11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38D7091C-B9BC-4BE0-B22A-0F96AAF5CA11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{383E28CF-273D-4407-BC52-9BEF0758FE65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{383E28CF-273D-4407-BC52-9BEF0758FE65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{383E28CF-273D-4407-BC52-9BEF0758FE65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{383E28CF-273D-4407-BC52-9BEF0758FE65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
