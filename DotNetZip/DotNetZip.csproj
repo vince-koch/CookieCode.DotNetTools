@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net5.0</TargetFramework>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>zip</ToolCommandName>
+        <PackageOutputPath>../.nupkg</PackageOutputPath>
+        <AssemblyName>dotnet-zip</AssemblyName>
+        <ApplicationIcon>cookie.ico</ApplicationIcon>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>dotnet-zip</PackageId>
+        <Authors>Vince Koch</Authors>
+        <Company>Cookie Code</Company>
+        <Product>dotnet-zip</Product>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/vince-koch/DotNetTools</PackageProjectUrl>
+        <PackageIcon>cookie.png</PackageIcon>
+        <RepositoryUrl>https://github.com/vince-koch/DotNetTools</RepositoryUrl>
+        <PackageTags>dotnet tool zip</PackageTags>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <OutputPath></OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommandLineParser" Version="2.8.0" />
+        <PackageReference Include="MAB.DotIgnore" Version="3.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\cookie.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
+
+</Project>
