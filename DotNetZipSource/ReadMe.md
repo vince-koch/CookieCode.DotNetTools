@@ -1,5 +1,6 @@
-﻿# dotnet-zip
+﻿# dotnet-zip-source
 
+Once this tool is installed you can run ```dotnet git-zip``` to quickly zip your project source files which git does not ignore.
 * Zips a project or solution folder
 * Includes and excludes files and folders as specified in the root ```.gitignore``` file
 * If no ```.gitignore``` file is found, [default rules](#default-rules) values will be applied
@@ -7,12 +8,12 @@
 
 ### To install
 ```
-dotnet tool install dotnet-zip
+dotnet tool install dotnet-zip-source
 ```
 
 ###To use
 ```
-dotnet zip -d [directory] -z [zipOutputPath] -r [rule] [rule] [rule]
+dotnet zip-source -d [directory] -z [zipOutputPath] -r [rule] [rule] [rule]
 
 Arguments:
     -d/--directory   The directory to begin zipping at

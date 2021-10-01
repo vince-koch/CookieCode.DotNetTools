@@ -3,7 +3,7 @@ using System.IO;
 
 using MAB.DotIgnore;
 
-namespace DotNetZip
+namespace DotNetZipSource
 {
     public static partial class ExtensionMethods
     {

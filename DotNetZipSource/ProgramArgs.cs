@@ -2,7 +2,7 @@
 
 using CommandLine;
 
-namespace DotNetZip
+namespace DotNetZipSource
 {
     public class ProgramArgs
     {

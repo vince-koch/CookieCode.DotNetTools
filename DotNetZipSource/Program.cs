@@ -7,7 +7,7 @@ using CommandLine;
 
 using MAB.DotIgnore;
 
-namespace DotNetZip
+namespace DotNetZipSource
 {
     public class Program
     {
