@@ -1,0 +1,6 @@
+{
+    "version": "1.0",
+    "url": "file:///C:/source/github/DotNetTools/.nupkg/dotnet-http-client.1.0.0.nupkg",
+    "extract_dir": "tools/net5.0/any",
+    "bin": "dotnet dotnet-http-client"
+  }
