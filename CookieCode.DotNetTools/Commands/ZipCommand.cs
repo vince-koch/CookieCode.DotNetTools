@@ -33,7 +33,7 @@ namespace CookieCode.DotNetTools.Commands
                         foreach (var file in files)
                         {
                             var filename = Path.GetRelativePath(sourcePath, file);
-                            WriteProgress(filename);
+                            AnsiUtil.WriteShortPathProgress(filename);
                             archive.CreateEntryFromFile(file, filename);
                             fileCount++;
                         }
@@ -41,7 +41,7 @@ namespace CookieCode.DotNetTools.Commands
                     else if (File.Exists(sourcePath))
                     {
                         var filename = Path.GetFileName(sourcePath);
-                        WriteProgress(filename);
+                        AnsiUtil.WriteShortPathProgress(filename);
                         archive.CreateEntryFromFile(sourcePath, filename);
                         fileCount++;
                     }
@@ -49,12 +49,6 @@ namespace CookieCode.DotNetTools.Commands
             }
 
             Console.WriteLine($"{fileCount} files zipped");
-        }
-
-        private void WriteProgress(string filename)
-        {
-            var shortPath = PathUtil.GetShortPath(filename);
-            Console.WriteLine($"\r{shortPath}{Ansi.ClearLineRight}");
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CookieCode.DotNetTools
+namespace CookieCode.DotNetTools.Utilities
 {
 	/// <summary>
 	/// Helper class for generating VT100 Ansi escape sequences.
@@ -57,10 +57,8 @@ namespace CookieCode.DotNetTools
 		public static string CursorPosSave => Enabled ? $"\u001b[s" : "";
 		public static string CursorPosRestore => Enabled ? $"\u001b[u" : "";
 
-		public static string ClearLineRight => Enabled ? $"\u001b[K" : "";
-		public static string ClearLineRight2 => Enabled ? $"\u001b[0K" : "";
+		public static string ClearLineRight => Enabled ? $"\u001b[0K" : "";
 		public static string ClearLineLeft => Enabled ? $"\u001b[1K" : "";
 		public static string ClearLine => Enabled ? $"\u001b[2K" : "";
-		
 	}
 }

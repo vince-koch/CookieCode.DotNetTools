@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -26,24 +27,25 @@ namespace CookieCode.DotNetTools.Utilities
         /// <summary>
         /// Gets non-ignored files
         /// </summary>
-        public static string[] GetFiles(IgnoreList ignoreList, string directory)
+        public static List<string> GetFiles(IgnoreList ignoreList, string directory)
         {
-            var list = new List<string>();
-            Process(ignoreList, directory, list);
-            return list.ToArray();
+            var notIgnored = new List<string>();
+            Process(ignoreList, directory, notIgnored, null);
+            return notIgnored;
         }
 
-        public static string[] GetIgnoredFiles(IgnoreList ignoreList, string directory)
+        public static List<string> GetIgnoredPaths(IgnoreList ignoreList, string directory)
         {
-            var list = new List<string>();
-            Process(ignoreList, directory, list);
-            return list.ToArray();
+            var ignored = new List<string>();
+            Process(ignoreList, directory, null, ignored);
+            return ignored;
         }
 
-        private static void Process(
+        public static void Process(
             this IgnoreList ignoreList, 
             string currentDirectory,
-            List<string> list)
+            List<string> notIgnored,
+            List<string> ignored)
         {
             // append .gitignore files in child folders
             var gitIgnorePath = Path.Combine(currentDirectory, ".gitignore");
@@ -59,9 +61,13 @@ namespace CookieCode.DotNetTools.Utilities
             var directories = Directory.GetDirectories(currentDirectory);
             foreach (var directory in directories)
             {
-                if (!ignoreList.IsIgnored(directory, pathIsDirectory: true))
+                if (ignoreList.IsIgnored(directory, pathIsDirectory: true))
                 {
-                    Process(ignoreList, directory, list);
+                    ignored?.Add(directory);
+                }
+                else
+                { 
+                    Process(ignoreList, directory, notIgnored, ignored);
                 }
             }
 
@@ -69,11 +75,27 @@ namespace CookieCode.DotNetTools.Utilities
             var files = Directory.GetFiles(currentDirectory);
             foreach (var file in files)
             {
-                if (!ignoreList.IsIgnored(file, pathIsDirectory: false))
+                if (ignoreList.IsIgnored(file, pathIsDirectory: false))
                 {
-                    list.Add(file);
+                    ignored?.Add(file);
+                }
+                else
+                { 
+                    notIgnored?.Add(file);
                 }
             }
+        }
+
+        public static List<string> RemoveGitFolder(List<string> source)
+        {
+            var target = source
+                .Where(p => !p.Contains($"{Path.DirectorySeparatorChar}.git{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+                .Where(p => !p.Contains($"{Path.AltDirectorySeparatorChar}.git{Path.AltDirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+                .Where(p => !p.EndsWith($"{Path.DirectorySeparatorChar}.git", StringComparison.OrdinalIgnoreCase))
+                .Where(p => !p.EndsWith($"{Path.AltDirectorySeparatorChar}.git", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            return target;
         }
     }
 }

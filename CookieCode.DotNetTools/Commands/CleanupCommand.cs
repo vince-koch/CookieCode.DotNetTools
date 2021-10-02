@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using CommandLine;
 using MAB.DotIgnore;
@@ -21,10 +18,16 @@ namespace CookieCode.DotNetTools.Commands
         [Option('r', "rules", Required = false, HelpText = "Add one or more exclude pattern rules")]
         public IEnumerable<string> Rules { get; set; }
 
+        [Option("is-dry-run", Required = false, HelpText = "List paths that will be removed")]
+        public bool IsDryRun { get; set; }
+
+        [Option("is-confirmed", Required = false, HelpText = "Assumes confirmation and does not confirm with user")]
+        public bool IsConfirmed { get; set; }
+
         public void Execute()
         {
             var searchDirectory = SourcePath ?? Directory.GetCurrentDirectory();
-            if (Directory.Exists(searchDirectory))
+            if (!Directory.Exists(searchDirectory))
             {
                 throw new DirectoryNotFoundException(searchDirectory);
             }
@@ -35,10 +38,29 @@ namespace CookieCode.DotNetTools.Commands
                 ? new IgnoreList(gitIgnorePath)
                 : GitIgnoreUtil.CreateDefaultIgnoreList();
 
-            ignoreList.AddRule(".git/");
             ignoreList.AddRules(Rules);
 
-            var files = GitIgnoreUtil.GetFiles(ignoreList, searchDirectory);
+            // get the list of ignored files, but don't look at anything in git
+            var paths = GitIgnoreUtil.GetIgnoredPaths(ignoreList, searchDirectory);
+            paths = GitIgnoreUtil.RemoveGitFolder(paths);
+
+            if (IsDryRun)
+            {
+                foreach (var path in paths)
+                {
+                    Console.WriteLine(path);
+                }
+            }
+
+            var confirmText = $"Delete {Ansi.FCyan}{paths.Count}{Ansi.Reset} paths? [y/N] ";
+            var isConfirmed = IsConfirmed || AnsiUtil.Confirm(confirmText, false);
+            if (isConfirmed)
+            {
+                foreach (var path in paths)
+                {
+                    FileSystemUtil.Delete(path);
+                }
+            }
         }
     }
 }

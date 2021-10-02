@@ -49,7 +49,7 @@ namespace CookieCode.DotNetTools.Commands
             Console.WriteLine("Success");
         }
 
-        private void CreateZipFile(string zipPath, string searchDirectory, string[] files)
+        private void CreateZipFile(string zipPath, string searchDirectory, List<string> files)
         {
             if (!files.Any())
             {
@@ -64,9 +64,7 @@ namespace CookieCode.DotNetTools.Commands
                 foreach (var file in files)
                 {
                     var relativePath = Path.GetRelativePath(searchDirectory, file);
-                    var shortPath = PathUtil.GetShortPath(relativePath);
-                    
-                    Console.Write($"\r{shortPath}{Ansi.ClearLineRight}");
+                    AnsiUtil.WriteShortPathProgress(relativePath);
 
                     archive.CreateEntryFromFile(file, relativePath);
                     fileCount++;

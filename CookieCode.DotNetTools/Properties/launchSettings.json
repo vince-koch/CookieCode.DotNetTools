@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "CookieCode.DotNetTools": {
+      "commandName": "Project",
+      "commandLineArgs": "cleanup",
+      "workingDirectory": "..\\"
+    }
+  }
+}
