@@ -6,74 +6,49 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 
-namespace DotNetHandle
+using CommandLine;
+
+using CookieCode.DotNetTools.Utilities;
+
+namespace CookieCode.DotNetTools.Commands
 {
-    public static class Program
+    [Verb("handle", HelpText = "A tool to identify which process has a file or directory handle locked, and optionally kill the process.  Note that this tool works by downloading Microsoft SysInternals handle.exe and parsing it's output.")]
+    public class HandleCommand : ICommand
     {
-        // https://rayanfam.com/topics/reversing-windows-internals-part1/
-        public static int Main(string[] args)
+        [Value(0, HelpText = "File or directory to look for")]
+        public string FileOrDirectory { get; set; }
+
+        public void Execute()
         {
-            try
+            var processes = CheckLocks(FileOrDirectory);
+            while (processes.Any())
             {
-                if (args.Length == 0)
+                Console.WriteLine();
+
+                var choice = AnsiUtil.Ask(
+                    "Do you want to kill these processes? [No], [r]efresh, [y]es ",
+                    ConsoleKey.Y,
+                    ConsoleKey.N,
+                    ConsoleKey.R,
+                    ConsoleKey.Enter);
+
+                switch (choice)
                 {
-                    throw new ArgumentException("No path was specified");
+                    case ConsoleKey.Y:
+                        Kill(processes);
+                        break;
+
+                    case ConsoleKey.R:
+                        processes = CheckLocks(FileOrDirectory);
+                        break;
+
+                    default:
+                        return;
                 }
-
-                var path = args[0];
-                if (!Directory.Exists(path) && !File.Exists(path))
-                {
-                    throw new ArgumentException($"Path [{path}] does not exist");
-                }
-
-                var processes = CheckLocks(path);
-                while (processes.Any())
-                {
-                    // confirm before killing
-                    Console.WriteLine();
-
-                    var response = Prompt(string.Concat(
-                        "Do you want to kill these processes (".DarkYellow(),
-                        "R".Yellow() + "efresh".DarkYellow(),
-                        " / ".DarkGray(),
-                        "Y".Yellow() + "es".DarkYellow(),
-                        " / ".DarkGray(),
-                        "NO".Yellow(),
-                        ")? ".DarkYellow()),
-                        ConsoleKey.N,
-                        ConsoleKey.Y,
-                        ConsoleKey.R);
-
-                    switch (response)
-                    {
-                        case ConsoleKey.Y:
-                            Kill(processes);
-                            return 0;
-
-                        case ConsoleKey.N:
-                            return 0;
-
-                        case ConsoleKey.R:
-                            processes = CheckLocks(path);
-                            break;
-                    }
-                }
-
-                return 0;
-            }
-            catch (Exception thrown)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(thrown);
-                return 1;
-            }
-            finally
-            {
-                Console.ResetColor();
             }
         }
 
-        private static Process[] CheckLocks(string path)
+        private Process[] CheckLocks(string path)
         {
             var handleExe = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "handle.exe");
             if (!File.Exists(handleExe))
@@ -93,7 +68,7 @@ namespace DotNetHandle
             foreach (var process in processes)
             {
                 Console.WriteLine(
-                    "{0,5}   {1}", 
+                    "{0,5}   {1}",
                     process.Id,
                     !process.HasExited ? process.ProcessName : "*** exited ***");
             }
@@ -101,7 +76,7 @@ namespace DotNetHandle
             return processes;
         }
 
-        private static Process[] GetProcesses(int[] pids)
+        private Process[] GetProcesses(int[] pids)
         {
             List<Process> list = new List<Process>();
 
@@ -124,7 +99,7 @@ namespace DotNetHandle
             return list.ToArray();
         }
 
-        private static int[] ParseProcessIds(string content)
+        private int[] ParseProcessIds(string content)
         {
             const string PidToken = " pid: ";
             const string TypeToken = " type: ";
@@ -145,7 +120,7 @@ namespace DotNetHandle
             return pids;
         }
 
-        private static string ExecuteHandleExe(string handleExe, string path)
+        private string ExecuteHandleExe(string handleExe, string path)
         {
             var startInfo = new ProcessStartInfo();
             startInfo.FileName = handleExe;
@@ -164,7 +139,7 @@ namespace DotNetHandle
             }
         }
 
-        private static void DownloadHandleExe()
+        private void DownloadHandleExe()
         {
             using (var client = new WebClient())
             {
@@ -180,7 +155,7 @@ namespace DotNetHandle
             }
         }
 
-        private static void Kill(Process[] processes)
+        private void Kill(Process[] processes)
         {
             // kill any process that has not already exited
             foreach (var process in processes)
@@ -198,29 +173,6 @@ namespace DotNetHandle
                 StringComparison.OrdinalIgnoreCase)))
             {
                 Process.Start("explorer.exe");
-            }
-        }
-
-        private static ConsoleKey Prompt(string message, ConsoleKey defaultKey, params ConsoleKey[] validKeys)
-        {
-            Console.Write(message);
-
-            while (true)
-            {
-                var key = Console.ReadKey(true);
-                if (key.Key == defaultKey || key.Key == ConsoleKey.Enter)
-                {
-                    Console.WriteLine(defaultKey);
-                    return defaultKey;
-                }
-
-                if (validKeys.Contains(key.Key))
-                {
-                    Console.WriteLine(key.Key);
-                    return key.Key;
-                }
-
-                Console.Beep();
             }
         }
     }
