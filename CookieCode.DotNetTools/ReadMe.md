@@ -4,6 +4,7 @@
 
 * [bump-version](#bump-version)
 * [cleanup](#cleanup)
+* [doc](#doc)
 * [fix-namespaces](#fix-namespaces)
 * [fix-project-refs](#fix-project-refs)
 * [generate-docs](#generate-docs)
@@ -16,7 +17,7 @@
 * [zip-publish](#zip-publish)
 * [zip-source](#zip-source)
 
-Generated at 10/5/2021 12:23:21 AM
+Generated at 10/5/2021 12:39:26 AM
 
 ### bump-version
 
@@ -37,6 +38,10 @@ Zips a directory of source files, ignoring files specified by .gitignore
 |-r<br/>--rules|Add one or more exclude pattern rules|
 |--is-dry-run|List paths that will be removed|
 |--is-confirmed|Assumes confirmation and does not confirm with user|
+
+### doc
+
+Document an assembly
 
 ### fix-namespaces
 
