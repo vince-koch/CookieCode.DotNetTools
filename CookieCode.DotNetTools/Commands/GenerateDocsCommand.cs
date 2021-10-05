@@ -4,20 +4,29 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 using CommandLine;
 
 namespace CookieCode.DotNetTools.Commands
 {
-    [Verb("doc", HelpText = "Document an assembly")]
-    public class DocCommand : ICommand
+    [Verb("generate-docs", HelpText = "Document an assembly")]
+    public class GenerateDocsCommand : ICommand
     {
+        [Value(0, Required = true, HelpText = "Target document path")]
+        [Option('s', "source", Required = true, HelpText = "Source assembly path")]
+        public string AssemblyPath { get; set; }
+
+        [Value(1, Required = true, HelpText = "Target document path")]
+        [Option('t', "target", Required = true, HelpText = "Target document path")]
+        public string DocumentPath { get; set; }
+
         public void Execute()
         {
-            var filename = Path.GetFileNameWithoutExtension(typeof(Program).Assembly.Location);
+            var assembly = Assembly.LoadFrom(AssemblyPath);
 
-            var commandTypes = typeof(Program).Assembly.GetTypes()
+            var filename = Path.GetFileNameWithoutExtension(assembly.Location);
+
+            var commandTypes = assembly.GetTypes()
                 .Where(type => type.IsClass && !type.IsAbstract)
                 .Where(type => typeof(ICommand).IsAssignableFrom(type))
                 .Where(type => type.GetCustomAttribute<VerbAttribute>() != null)
@@ -27,6 +36,7 @@ namespace CookieCode.DotNetTools.Commands
                 .AppendLine($"# {filename}")
                 .AppendLine()
                 .AppendLine(GetCommandTableOfContents(commandTypes))
+                .AppendLine($"Generated at {DateTime.Now}")
                 .AppendLine();
 
             foreach (var commandType in commandTypes)
@@ -42,7 +52,7 @@ namespace CookieCode.DotNetTools.Commands
         private string GetCommandTableOfContents(Type[] commandTypes)
         {
             var builder = new StringBuilder()
-                .AppendLine("### Commands")
+                .AppendLine("### Command List")
                 .AppendLine();
 
             foreach (var type in commandTypes)

@@ -36,4 +36,8 @@
         <PackageReference Include="MAB.DotIgnore" Version="3.0.2" />
         <PackageReference Include="NuGet.Protocol" Version="5.11.0" />
     </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="&quot;$(TargetDir)$(TargetName)&quot; generate-docs --source &quot;$(TargetPath)&quot; --target &quot;$(ProjectDir)ReadMe.md&quot;" />
+    </Target>
 </Project>

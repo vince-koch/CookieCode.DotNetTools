@@ -1,12 +1,12 @@
 # dnt
 
-### Commands
+### Command List
 
 * [bump-version](#bump-version)
 * [cleanup](#cleanup)
-* [doc](#doc)
 * [fix-namespaces](#fix-namespaces)
 * [fix-project-refs](#fix-project-refs)
+* [generate-docs](#generate-docs)
 * [handle](#handle)
 * [pack](#pack)
 * [prune](#prune)
@@ -16,6 +16,7 @@
 * [zip-publish](#zip-publish)
 * [zip-source](#zip-source)
 
+Generated at 10/5/2021 12:23:21 AM
 
 ### bump-version
 
@@ -37,10 +38,6 @@ Zips a directory of source files, ignoring files specified by .gitignore
 |--is-dry-run|List paths that will be removed|
 |--is-confirmed|Assumes confirmation and does not confirm with user|
 
-### doc
-
-Document an assembly
-
 ### fix-namespaces
 
 Update class namespaces to match folder and file names
@@ -57,6 +54,15 @@ Attempts to fix project references
 |Arguments |Description |
 |----------|------------|
 |Position 0|Source folder|
+
+### generate-docs
+
+Document an assembly
+
+|Arguments |Description |
+|----------|------------|
+|Position 0<br/>-s<br/>--source|Source assembly path<br/>Required|
+|Position 1<br/>-t<br/>--target|Target document path<br/>Required|
 
 ### handle
 
