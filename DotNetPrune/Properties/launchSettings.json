@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "DotNetPrune": {
-      "commandName": "Project",
-      "commandLineArgs": "C:\\source\\test"
-    }
-  }
-}

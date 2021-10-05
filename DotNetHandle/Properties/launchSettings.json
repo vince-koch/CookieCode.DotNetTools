@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "DotNetHandle": {
-      "commandName": "Project",
-      "commandLineArgs": "C:\\source\\github\\DotNetTools"
-    }
-  }
-}

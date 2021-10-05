@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace CookieCode.DotNetTools.Utilities
 {
@@ -6,40 +7,49 @@ namespace CookieCode.DotNetTools.Utilities
     {
         public static string UserColor = Ansi.FGreen;
 
-        public static bool Confirm(string confirmText, bool? defaultValue = null)
+        public static ConsoleKey Ask(string askText, params ConsoleKey?[] validKeys)
         {
-            Console.Write(confirmText);
+            Console.Write(askText);
 
             while (true)
             {
                 var key = Console.ReadKey(true);
-                switch (key.Key)
+                if (validKeys.Contains(key.Key))
                 {
-                    case ConsoleKey.Y:
-                        Console.WriteLine($"{UserColor}Y{Ansi.Reset}");
-                        return true;
-
-                    case ConsoleKey.N:
-                        Console.WriteLine($"{UserColor}N{Ansi.Reset}");
-                        return false;
-
-                    case ConsoleKey.Enter:
-                        if (defaultValue.HasValue)
-                        {
-                            var yesOrNo = defaultValue.Value ? "Y" : "N";
-                            Console.WriteLine($"{UserColor}{yesOrNo}{Ansi.Reset}");
-                            return defaultValue.Value;
-                        }
-                        else
-                        {
-                            Console.Beep();
-                        }
-                        break;
-
-                    default:
-                        Console.Beep();
-                        break;
+                    WriteUserResponse(key.Key);
+                    return key.Key;
                 }
+                else
+                {
+                    Console.Beep();
+                }
+            }
+        }
+
+        public static bool Confirm(string confirmText, bool? defaultValue)
+        {
+            var choice = Ask(
+                confirmText,
+                ConsoleKey.Y,
+                ConsoleKey.N,
+                defaultValue.HasValue ? ConsoleKey.Enter : null);
+
+            switch (choice)
+            {
+                case ConsoleKey.Y:
+                    WriteUserResponse(choice);
+                    return true;
+
+                case ConsoleKey.N:
+                    WriteUserResponse(choice);
+                    return false;
+
+                case ConsoleKey.Enter:
+                    WriteUserResponse(defaultValue.Value ? ConsoleKey.Y : ConsoleKey.N);
+                    return defaultValue.Value;
+
+                default:
+                    throw new NotImplementedException();
             }
         }
 
@@ -52,6 +62,11 @@ namespace CookieCode.DotNetTools.Utilities
         public static void WriteProgress(string text)
         {
             Console.WriteLine($"\r{text}{Ansi.ClearLineRight}");
+        }
+
+        private static void WriteUserResponse(ConsoleKey consoleKey)
+        {
+            Console.WriteLine($"{UserColor}{consoleKey}{Ansi.Reset}");
         }
     }
 }

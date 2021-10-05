@@ -52,7 +52,7 @@ namespace CookieCode.DotNetTools.Commands
                 }
             }
 
-            var confirmText = $"Delete {Ansi.FCyan}{paths.Count}{Ansi.Reset} paths? [y/N] ";
+            var confirmText = $"Delete {Ansi.FCyan}{paths.Count}{Ansi.Reset} paths? [y]es, [N]o ";
             var isConfirmed = IsConfirmed || AnsiUtil.Confirm(confirmText, false);
             if (isConfirmed)
             {
