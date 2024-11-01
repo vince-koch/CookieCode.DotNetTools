@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.IO;
+using System;
+using System.Text.RegularExpressions;
 
 namespace CookieCode.DotNetTools.Utilities
 {
@@ -15,6 +17,20 @@ namespace CookieCode.DotNetTools.Utilities
                 : path;
 
             return result;
+        }
+
+        public static string NormalizePath(string path)
+        {
+            try
+            {
+                return Path.GetFullPath(path)
+                    .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                    .ToLowerInvariant();
+            }
+            catch (Exception thrown)
+            {
+                throw new ArgumentException($"Invalid path: {path}", thrown);
+            }
         }
     }
 }

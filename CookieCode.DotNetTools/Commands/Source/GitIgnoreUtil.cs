@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using MAB.DotIgnore;
 
-namespace CookieCode.DotNetTools.Utilities
+namespace CookieCode.DotNetTools.Commands.Source
 {
     public static class GitIgnoreUtil
     {
@@ -30,19 +29,19 @@ namespace CookieCode.DotNetTools.Utilities
         public static List<string> GetFiles(IgnoreList ignoreList, string directory)
         {
             var notIgnored = new List<string>();
-            Process(ignoreList, directory, notIgnored, null);
+            ignoreList.Process(directory, notIgnored, null);
             return notIgnored;
         }
 
         public static List<string> GetIgnoredPaths(IgnoreList ignoreList, string directory)
         {
             var ignored = new List<string>();
-            Process(ignoreList, directory, null, ignored);
+            ignoreList.Process(directory, null, ignored);
             return ignored;
         }
 
         public static void Process(
-            this IgnoreList ignoreList, 
+            this IgnoreList ignoreList,
             string currentDirectory,
             List<string> notIgnored,
             List<string> ignored)
@@ -66,8 +65,8 @@ namespace CookieCode.DotNetTools.Utilities
                     ignored?.Add(directory);
                 }
                 else
-                { 
-                    Process(ignoreList, directory, notIgnored, ignored);
+                {
+                    ignoreList.Process(directory, notIgnored, ignored);
                 }
             }
 
@@ -80,7 +79,7 @@ namespace CookieCode.DotNetTools.Utilities
                     ignored?.Add(file);
                 }
                 else
-                { 
+                {
                     notIgnored?.Add(file);
                 }
             }

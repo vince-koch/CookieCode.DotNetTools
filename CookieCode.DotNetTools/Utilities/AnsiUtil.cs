@@ -53,15 +53,10 @@ namespace CookieCode.DotNetTools.Utilities
             }
         }
 
-        public static void WriteShortPathProgress(string path)
-        {
-            var shortPath = PathUtil.GetShortPath(path);
-            WriteProgress(shortPath);
-        }
-
         public static void WriteProgress(string text)
         {
-            Console.WriteLine($"\r{text}{Ansi.ClearLineRight}");
+            //Console.WriteLine($"\r{text}{Ansi.ClearLineRight}");
+            Console.Write($"\r{text}{Ansi.ClearLineRight}");
         }
 
         private static void WriteUserResponse(ConsoleKey consoleKey)
