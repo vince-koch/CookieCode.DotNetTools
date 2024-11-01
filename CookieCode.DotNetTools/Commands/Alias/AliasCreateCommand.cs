@@ -1,5 +1,5 @@
 ﻿using CookieCode.DotNetTools.Utilities;
-
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 using System;
@@ -57,6 +57,8 @@ namespace CookieCode.DotNetTools.Commands.Alias
             }
 
             GenerateFile(settings.Alias, targetFolder, exePath, settings.IsNowait);
+
+            AnsiConsole.MarkupLine($"Alias created: [cyan]{settings.Alias}[/] => [blue]{exePath}[/]");
 
             return 0;
         }
