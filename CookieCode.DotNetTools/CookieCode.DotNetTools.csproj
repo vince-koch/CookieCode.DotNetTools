@@ -41,5 +41,10 @@
         <PackageReference Include="Spectre.Console.Cli" Version="0.49.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Commands\Switch\" />
+      <Folder Include="Commands\Test\" />
+    </ItemGroup>
+
 
 </Project>
