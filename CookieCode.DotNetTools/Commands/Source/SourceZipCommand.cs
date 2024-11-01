@@ -18,15 +18,15 @@ namespace CookieCode.DotNetTools.Commands.Source
     {
         public class Settings : CommandSettings
         {
-            [CommandOption("-s|--source")]
+            [CommandOption("-s|--source <SourcePath>")]
             [Description("Set the starting folder")]
-            public string SourcePath { get; set; }
+            public string? SourcePath { get; set; }
 
-            [CommandOption("-z|--zip")]
+            [CommandOption("-z|--zip <ZipPath>")]
             [Description("Path of the zip file")]
             public string ZipPath { get; set; }
 
-            [CommandOption("-r|--rule")]
+            [CommandOption("-r|--rule <Rule>")]
             [Description("Add one or more exclude pattern rules")]
             public IEnumerable<string> Rules { get; set; }
         }

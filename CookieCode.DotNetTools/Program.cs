@@ -60,7 +60,7 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<SourceZipBinCommand>("bin").WithAlias("zip-bin").WithAlias("bin-zip");
                         });
 
-                        config.AddCommand<ZipCommand>("unzip");
+                        config.AddCommand<ZipCommand>("zip");
                         config.AddCommand<UnzipCommand>("unzip");
                     });
 
