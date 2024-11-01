@@ -10,7 +10,6 @@ namespace CookieCode.DotNetTools.Utilities
 
         public string Path { get; }
 
-        private readonly string _path;
         private readonly XDocument _document;
 
         public string Name
@@ -47,12 +46,12 @@ namespace CookieCode.DotNetTools.Utilities
             }
         }
 
-        public string Sdk => _document.Root.Element("Sdk")?.Value;
+        public string? Sdk => _document.Root?.Element("Sdk")?.Value;
 
         public CsProject(string path)
         {
-            _path = path;
-            _document = XDocument.Load(_path);
+            Path = path;
+            _document = XDocument.Load(Path);
         }
     }
 }

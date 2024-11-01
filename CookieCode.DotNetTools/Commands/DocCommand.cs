@@ -31,7 +31,7 @@ namespace CookieCode.DotNetTools.Commands
 
             foreach (var commandType in commandTypes)
             {
-                var verb = commandType.GetCustomAttribute<VerbAttribute>();
+                var verb = commandType.GetCustomAttribute<VerbAttribute>().ThrowIfNull();
                 builder.AppendLine(GetCommandHelp(commandType, verb));
             }
 
@@ -47,7 +47,7 @@ namespace CookieCode.DotNetTools.Commands
 
             foreach (var type in commandTypes)
             {
-                var verb = type.GetCustomAttribute<VerbAttribute>();
+                var verb = type.GetCustomAttribute<VerbAttribute>().ThrowIfNull();
                 builder.AppendLine($"* [{verb.Name}](#{verb.Name})");
             }
 
@@ -74,8 +74,8 @@ namespace CookieCode.DotNetTools.Commands
 
                 foreach (var property in properties)
                 {
-                    var value = property.GetCustomAttribute<ValueAttribute>();
-                    var option = property.GetCustomAttribute<OptionAttribute>();
+                    var value = property.GetCustomAttribute<ValueAttribute>().ThrowIfNull();
+                    var option = property.GetCustomAttribute<OptionAttribute>().ThrowIfNull();
 
                     var arguments = GetArguments(property, value, option);
                     string description = GetDescriptions(property, value, option);
@@ -108,14 +108,14 @@ namespace CookieCode.DotNetTools.Commands
             return string.Join("<br/>", arguments);
         }
 
-        private string GetDescriptions(PropertyInfo property, ValueAttribute value, OptionAttribute option)
+        private string GetDescriptions(PropertyInfo property, ValueAttribute? value, OptionAttribute? option)
         {
             var description = new List<string>();
 
             if ((value != null && !string.IsNullOrWhiteSpace(value.HelpText)
                 || (option != null && !string.IsNullOrWhiteSpace(option.HelpText))))
             {
-                description.Add(option?.HelpText ?? value?.HelpText);
+                description.Add(option?.HelpText ?? value?.HelpText ?? throw new ArgumentNullException());
             }
 
             if ((value != null && value.Required)

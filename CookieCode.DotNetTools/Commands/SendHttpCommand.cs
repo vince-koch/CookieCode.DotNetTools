@@ -12,10 +12,10 @@ namespace CookieCode.DotNetTools.Commands
     {
         [Value(0)]
         [Option('i', "input", HelpText = "The path to the text file containing the HTTP request to send")]
-        public string InputPath { get; set; }
+        public required string InputPath { get; set; }
 
         [Option('t', "timeout", Required = false, HelpText = "The timeout (in seconds) to wait, default is 60")]
-        public int TimeoutInSeconds { get; set; } = 60;
+        public required int TimeoutInSeconds { get; set; } = 60;
 
         public void Execute()
         {

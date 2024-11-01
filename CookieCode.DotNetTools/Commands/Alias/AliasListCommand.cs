@@ -1,4 +1,5 @@
-﻿using Spectre.Console.Cli;
+﻿using Spectre.Console;
+using Spectre.Console.Cli;
 
 using System;
 using System.ComponentModel;
@@ -23,11 +24,53 @@ namespace CookieCode.DotNetTools.Commands.Alias
 
             var files = Directory
                 .GetFiles(Env.Instance.ALIAS_HOME, "*.*", SearchOption.TopDirectoryOnly)
-                .Select(file => Path.GetFileName(file))
                 .OrderBy(file => file)
                 .ToList();
 
-            files.ForEach(file => Console.WriteLine($"    {file}"));
+			//files.ForEach(file => Console.WriteLine($"    {Path.GetFileName(file)}"));
+
+			var exePathPrefix = $"set {AliasCreateCommand.EXE_PATH}=";
+            var exeWaitPrefix = $"set {AliasCreateCommand.EXE_WAIT}=";
+
+            var table = new Table();
+            table.AddColumn("Alias");
+			table.AddColumn("Exe Path");
+			table.AddColumn("Wait");
+
+			foreach (var file in files)
+			{
+				var lines = File.ReadAllLines(file);
+
+				var filename = Path.GetFileName(file);
+
+                var exePath = lines
+                    .Where(line => line.StartsWith(exePathPrefix))
+                    .Select(line => line.Substring(exePathPrefix.Length))
+                    .Select(line => line.Trim('\"'))
+                    .SingleOrDefault();
+
+                var exeWait = lines
+					.Where(line => line.StartsWith(exeWaitPrefix))
+					.Select(line => line.Substring(exeWaitPrefix.Length))
+                    .Select(line => line == "1" ? true : false)
+					.SingleOrDefault();
+
+                if (!string.IsNullOrWhiteSpace(exePath))
+                {
+                    if (!File.Exists(exePath))
+                    {
+                        var escaped = exePath.Replace("[", "[[").Replace("]", "]]");
+						exePath = $"[red]{escaped}[/]";
+                    }
+                }
+
+				table.AddRow(
+                    filename,
+                    exePath ?? string.Empty,
+                    exeWait.ToString());
+			}
+
+            AnsiConsole.Write(table);
 
             return 0;
         }

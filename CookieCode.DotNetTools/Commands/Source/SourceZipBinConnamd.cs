@@ -20,15 +20,15 @@ namespace CookieCode.DotNetTools.Commands.Source
         {
             [CommandOption($"-s|--source <{nameof(SourcePath)}>")]
             [Description("Set the starting folder; Defaut is current working directory")]
-            public string? SourcePath { get; set; }
+            public required string? SourcePath { get; set; }
 
             [CommandOption("-z|--zip")]
             [Description("Path of the zip file")]
-            public string ZipPath { get; set; }
+            public required string ZipPath { get; set; }
 
             [CommandOption("-r|--rule")]
             [Description("Add one or more exclude pattern rules")]
-            public IEnumerable<string> Rules { get; set; }
+            public required IEnumerable<string> Rules { get; set; }
         }
 
         public override int Execute(CommandContext context, Settings settings)

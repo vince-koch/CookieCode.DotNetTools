@@ -18,11 +18,11 @@ namespace CookieCode.DotNetTools.Commands.Zip
         {
             [CommandOption("-s|--source <SourcePath>")]
 			[Description("One or more source paths (at least one required)")]
-			public IEnumerable<string> SourcePaths { get; set; } = Array.Empty<string>();
+			public required IEnumerable<string> SourcePaths { get; set; } = Array.Empty<string>();
 
 			[CommandOption("-z|--zip <ZipPath>")]
             [Description("Zip archive path")]
-            public string ZipPath { get; set; }
+            public required string ZipPath { get; set; }
 
 			public override ValidationResult Validate()
 			{

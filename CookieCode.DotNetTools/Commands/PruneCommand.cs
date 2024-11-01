@@ -10,7 +10,7 @@ namespace CookieCode.DotNetTools.Commands
     public class PruneCommand : ICommand
     {
         [Value(0, HelpText = "Starting directory")]
-        public string DirectoryPath { get; set; }
+        public required string DirectoryPath { get; set; }
 
         public void Execute()
         {

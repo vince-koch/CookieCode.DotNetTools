@@ -5,7 +5,8 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
-
+using System.Net.Http;
+using System.Threading.Tasks;
 using CommandLine;
 
 using CookieCode.DotNetTools.Utilities;
@@ -16,11 +17,16 @@ namespace CookieCode.DotNetTools.Commands
     public class HandleCommand : ICommand
     {
         [Value(0, HelpText = "File or directory to look for")]
-        public string FileOrDirectory { get; set; }
+        public required string FileOrDirectory { get; set; }
 
-        public void Execute()
+		public void Execute()
         {
-            var processes = CheckLocks(FileOrDirectory);
+            ExecuteAsync().Wait();
+        }
+
+		public async Task ExecuteAsync()
+        {
+            var processes = await CheckLocks(FileOrDirectory);
             while (processes.Any())
             {
                 Console.WriteLine();
@@ -39,7 +45,7 @@ namespace CookieCode.DotNetTools.Commands
                         break;
 
                     case ConsoleKey.R:
-                        processes = CheckLocks(FileOrDirectory);
+                        processes = await CheckLocks(FileOrDirectory);
                         break;
 
                     default:
@@ -48,12 +54,12 @@ namespace CookieCode.DotNetTools.Commands
             }
         }
 
-        private Process[] CheckLocks(string path)
+        private async Task<Process[]> CheckLocks(string path)
         {
             var handleExe = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "handle.exe");
             if (!File.Exists(handleExe))
             {
-                DownloadHandleExe();
+                await DownloadHandleExe();
             }
 
             var content = ExecuteHandleExe(handleExe, path);
@@ -128,7 +134,7 @@ namespace CookieCode.DotNetTools.Commands
             startInfo.RedirectStandardOutput = true;
             startInfo.UseShellExecute = false;
 
-            using (var process = Process.Start(startInfo))
+            using (var process = Process.Start(startInfo).ThrowIfNull())
             {
                 process.WaitForExit();
 
@@ -139,23 +145,36 @@ namespace CookieCode.DotNetTools.Commands
             }
         }
 
-        private void DownloadHandleExe()
+        private async Task DownloadHandleExe()
         {
-            using (var client = new WebClient())
-            {
+            //using (var client = new WebClient())
+            //{
                 var handleZip = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "handle.zip");
 
                 Console.WriteLine("Downloading sysinternals handle.exe");
-                client.DownloadFile("https://download.sysinternals.com/files/Handle.zip", handleZip);
+                //client.DownloadFile("https://download.sysinternals.com/files/Handle.zip", handleZip);
+				await DownloadFileAsync("https://download.sysinternals.com/files/Handle.zip", handleZip);
 
-                Console.WriteLine("Extracing sysinternals handle.exe");
+				Console.WriteLine("Extracing sysinternals handle.exe");
                 ZipFile.ExtractToDirectory(handleZip, AppDomain.CurrentDomain.BaseDirectory);
 
                 File.Delete(handleZip);
-            }
+            //}
         }
 
-        private void Kill(Process[] processes)
+		private async Task DownloadFileAsync(string fileUrl, string destinationPath)
+		{
+			var client = new HttpClient();
+			using var response = await client.GetAsync(fileUrl, HttpCompletionOption.ResponseHeadersRead);
+			response.EnsureSuccessStatusCode();
+
+			await using var stream = await response.Content.ReadAsStreamAsync();
+			await using var fileStream = new FileStream(destinationPath, FileMode.Create, FileAccess.Write, FileShare.None);
+
+			await stream.CopyToAsync(fileStream);
+		}
+
+		private void Kill(Process[] processes)
         {
             // kill any process that has not already exited
             foreach (var process in processes)
@@ -168,7 +187,7 @@ namespace CookieCode.DotNetTools.Commands
 
             // if we just killed off explorer then restart it
             if (processes.Any(p => string.Equals(
-                Path.GetFileName(p.MainModule.FileName),
+                Path.GetFileName(p.MainModule.ThrowIfNull().FileName),
                 "explorer.exe",
                 StringComparison.OrdinalIgnoreCase)))
             {

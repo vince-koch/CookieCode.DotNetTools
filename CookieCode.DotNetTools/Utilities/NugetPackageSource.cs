@@ -2,10 +2,10 @@
 {
     public class NugetPackageSource
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public string Location { get; set; }
+        public required string Location { get; set; }
 
-        public int ProtocolVersion { get; set; }
+        public required int ProtocolVersion { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace CookieCode.DotNetTools.Commands
     public class FixProjectRefsCommand : ICommand
     {
         [Value(0, HelpText = "Source folder")]
-        public string SourceFolder { get; set; }
+        public required string SourceFolder { get; set; }
 
         public void Execute()
         {
@@ -28,7 +28,7 @@ namespace CookieCode.DotNetTools.Commands
                 var isDirty = false;
 
                 var projectPath = pair.Value;
-                var projectFolder = Path.GetDirectoryName(projectPath);
+                var projectFolder = Path.GetDirectoryName(projectPath).ThrowIfNull();
 
                 var csproj = XDocument.Load(projectPath);
 
@@ -40,7 +40,7 @@ namespace CookieCode.DotNetTools.Commands
                 WriteLine(ConsoleColor.White, pair.Key);
                 foreach (var projectReference in projectReferences)
                 {
-                    var includeAttribute = projectReference.Attribute("Include");
+                    var includeAttribute = projectReference.Attribute("Include").ThrowIfNull();
                     var currentRelativePath = includeAttribute.Value;
                     var currentProjectName = Path.GetFileName(currentRelativePath);
 
@@ -52,9 +52,8 @@ namespace CookieCode.DotNetTools.Commands
                         continue;
                     }
 
-                    string lookupFullPath;
                     var filename = Path.GetFileName(currentRelativePath);
-                    if (csprojMap.TryGetValue(filename, out lookupFullPath))
+                    if (csprojMap.TryGetValue(filename, out string? lookupFullPath))
                     {
                         var lookupRelativePath = Path.GetRelativePath(projectFolder, lookupFullPath);
                         includeAttribute.Value = lookupRelativePath;

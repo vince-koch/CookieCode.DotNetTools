@@ -14,10 +14,10 @@ namespace CookieCode.DotNetTools.Commands.Source
         {
             [CommandOption("-f|--folder")]
             [Description("Root folder to begin processing at;  Defaults to current working directory")]
-            public string RootFolder { get; set; }
+            public required string RootFolder { get; set; }
 
             [CommandOption("-n|--namespace")]
-            public string RootNamespace { get; set; }
+            public required string RootNamespace { get; set; }
         }
 
         public override int Execute(CommandContext context, Settings settings)
@@ -60,7 +60,7 @@ namespace CookieCode.DotNetTools.Commands.Source
             for (var i = 0; i < files.Length; i++)
             {
                 var file = files[i];
-                var directory = Path.GetDirectoryName(file);
+                var directory = Path.GetDirectoryName(file).ThrowIfNull();
                 var relativePath = Path.GetRelativePath(settings.RootFolder, directory);
                 var relativeNamespace = relativePath.Replace('\\', '.').Replace('/', '.');
 

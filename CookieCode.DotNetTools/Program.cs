@@ -38,7 +38,7 @@ namespace CookieCode.DotNetTools
                         {
                             config.SetDescription("Manage aliases to executable applications");
                             config.SetDefaultCommand<AliasCreateCommand>();
-                            config.AddCommand<AliasCreateCommand>("create");
+                            config.AddCommand<AliasCreateCommand>("create").WithAlias("add");
                             config.AddCommand<AliasHomeCommand>("home");
                             config.AddCommand<AliasListCommand>("list");
                         });

@@ -30,13 +30,13 @@ namespace CookieCode.DotNetTools.Utilities
                 .Single();
 
             var list = new List<NugetPackageSource>();
-            foreach (var packageSource in packageSources.Elements())
+            foreach (XElement packageSource in packageSources.Elements())
             {
                 var item = new NugetPackageSource
                 {
-                    Name = packageSource.Attribute("key").Value,
-                    Location = packageSource.Attribute("value").Value,
-                    ProtocolVersion = int.Parse(packageSource.Attribute("protocolVersion").Value)
+                    Name = packageSource.Attribute("key").ThrowIfNull().Value,
+                    Location = packageSource.Attribute("value").ThrowIfNull().Value,
+                    ProtocolVersion = int.Parse(packageSource.Attribute("protocolVersion").ThrowIfNull().Value)
                 };
 
                 list.Add(item);

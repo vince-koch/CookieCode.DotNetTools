@@ -43,8 +43,8 @@ namespace CookieCode.DotNetTools.Commands.Source
         public static void Process(
             this IgnoreList ignoreList,
             string currentDirectory,
-            List<string> notIgnored,
-            List<string> ignored)
+            List<string>? notIgnored,
+            List<string>? ignored)
         {
             // append .gitignore files in child folders
             var gitIgnorePath = Path.Combine(currentDirectory, ".gitignore");

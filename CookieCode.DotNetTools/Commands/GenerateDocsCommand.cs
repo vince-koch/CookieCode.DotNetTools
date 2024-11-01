@@ -14,11 +14,11 @@ namespace CookieCode.DotNetTools.Commands
     {
         [Value(0, Required = true, HelpText = "Target document path")]
         [Option('s', "source", Required = true, HelpText = "Source assembly path")]
-        public string AssemblyPath { get; set; }
+        public required string AssemblyPath { get; set; }
 
         [Value(1, Required = true, HelpText = "Target document path")]
         [Option('t', "target", Required = true, HelpText = "Target document path")]
-        public string DocumentPath { get; set; }
+        public required string DocumentPath { get; set; }
 
         public void Execute()
         {
@@ -41,7 +41,7 @@ namespace CookieCode.DotNetTools.Commands
 
             foreach (var commandType in commandTypes)
             {
-                var verb = commandType.GetCustomAttribute<VerbAttribute>();
+                var verb = commandType.GetCustomAttribute<VerbAttribute>().ThrowIfNull();
                 builder.AppendLine(GetCommandHelp(commandType, verb));
             }
 
@@ -58,7 +58,10 @@ namespace CookieCode.DotNetTools.Commands
             foreach (var type in commandTypes)
             {
                 var verb = type.GetCustomAttribute<VerbAttribute>();
-                builder.AppendLine($"* [{verb.Name}](#{verb.Name})");
+                if (verb != null)
+                {
+					builder.AppendLine($"* [{verb.Name}](#{verb.Name})");
+				}
             }
 
             return builder.ToString();
@@ -96,7 +99,7 @@ namespace CookieCode.DotNetTools.Commands
             return builder.ToString();
         }
 
-        private string GetArguments(PropertyInfo property, ValueAttribute value, OptionAttribute option)
+        private string GetArguments(PropertyInfo property, ValueAttribute? value, OptionAttribute? option)
         {
             var arguments = new List<string>();
 
@@ -118,14 +121,14 @@ namespace CookieCode.DotNetTools.Commands
             return string.Join("<br/>", arguments);
         }
 
-        private string GetDescriptions(PropertyInfo property, ValueAttribute value, OptionAttribute option)
+        private string GetDescriptions(PropertyInfo property, ValueAttribute? value, OptionAttribute? option)
         {
             var description = new List<string>();
 
             if ((value != null && !string.IsNullOrWhiteSpace(value.HelpText)
                 || (option != null && !string.IsNullOrWhiteSpace(option.HelpText))))
             {
-                description.Add(option?.HelpText ?? value?.HelpText);
+                description.Add(option?.HelpText ?? value?.HelpText ?? throw new ArgumentNullException());
             }
 
             if ((value != null && value.Required)

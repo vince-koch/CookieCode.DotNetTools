@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 using CommandLine;
 
@@ -11,11 +6,11 @@ using CookieCode.DotNetTools.Utilities;
 
 namespace CookieCode.DotNetTools.Commands
 {
-    [Verb("pack", HelpText = "")]
+	[Verb("pack", HelpText = "")]
     public class PackCommand : ICommand
     {
         [Value(0, HelpText = "Source folder, project, or solution")]
-        public string SourcePath { get; set; }
+        public required string SourcePath { get; set; }
 
         public void Execute()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace CookieCode.DotNetTools.Utilities
 {
@@ -45,8 +46,11 @@ namespace CookieCode.DotNetTools.Utilities
                     return false;
 
                 case ConsoleKey.Enter:
-                    WriteUserResponse(defaultValue.Value ? ConsoleKey.Y : ConsoleKey.N);
-                    return defaultValue.Value;
+                    var defaultKey = defaultValue.HasValue
+                        ? defaultValue.Value ? ConsoleKey.Y : ConsoleKey.N
+                        : ConsoleKey.N;
+					WriteUserResponse(defaultKey);
+                    return defaultKey == ConsoleKey.Y;
 
                 default:
                     throw new NotImplementedException();

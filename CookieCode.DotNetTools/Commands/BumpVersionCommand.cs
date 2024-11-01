@@ -13,10 +13,10 @@ namespace CookieCode.DotNetTools.Commands
     public class BumpVersionCommand : ICommand
     {
         [Value(0, Required = true, HelpText = "Project file path")]
-        public string ProjectPath { get; set; }
+        public required string ProjectPath { get; set; }
 
         [Value(1, Required = false, Default = VersionPart.Build, HelpText = "Project file path")]
-        public VersionPart BumpPart { get; set; }
+        public required VersionPart BumpPart { get; set; }
 
         public void Execute()
         {
@@ -56,7 +56,10 @@ namespace CookieCode.DotNetTools.Commands
             {
                 versionNode = new XElement("Version", "0.0");
                 var propertyGroupNode = csproj.XPathSelectElement("Project/PropertyGroup");
-                propertyGroupNode.Add(versionNode);
+                if (propertyGroupNode != null)
+                {
+                    propertyGroupNode.Add(versionNode);
+                }
             }
 
             var startVersion = Version.Parse(versionNode.Value);

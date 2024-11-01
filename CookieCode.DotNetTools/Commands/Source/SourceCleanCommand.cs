@@ -18,19 +18,19 @@ namespace CookieCode.DotNetTools.Commands.Source
         {
             [CommandOption("-s|--source")]
             [Description("Set the starting folder")]
-            public string SourcePath { get; set; }
+            public required string SourcePath { get; set; }
 
             [CommandOption("-r|--rules")]
             [Description("Add one or more exclude pattern rules")]
-            public IEnumerable<string> Rules { get; set; }
+            public required IEnumerable<string> Rules { get; set; }
 
             [CommandOption("-d|--dry")]
             [Description("List paths that will be removed")]
-            public bool IsDryRun { get; set; }
+            public required bool IsDryRun { get; set; }
 
             [CommandOption("-y|--yes")]
             [Description("Assumes confirmation and does not confirm with user")]
-            public bool IsConfirmed { get; set; }
+            public required bool IsConfirmed { get; set; }
         }
 
         public override int Execute(CommandContext context, Settings settings)
