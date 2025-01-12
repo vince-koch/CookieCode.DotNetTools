@@ -1,5 +1,5 @@
 ﻿using CookieCode.DotNetTools.Utilities;
-
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 using System;
@@ -31,7 +31,10 @@ namespace CookieCode.DotNetTools.Commands.Alias
             public bool ShouldCreateHere { get; set; } = false;
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+		public const string EXE_PATH = nameof(EXE_PATH);
+		public const string EXE_WAIT = nameof(EXE_WAIT);
+
+		public override int Execute(CommandContext context, Settings settings)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(settings.Alias, nameof(settings.Alias));
             ArgumentException.ThrowIfNullOrWhiteSpace(settings.ExePath, nameof(settings.ExePath));
@@ -58,6 +61,8 @@ namespace CookieCode.DotNetTools.Commands.Alias
 
             GenerateFile(settings.Alias, targetFolder, exePath, settings.IsNowait);
 
+            AnsiConsole.MarkupLine($"Alias created: [cyan]{settings.Alias}[/] => [blue]{exePath}[/]");
+
             return 0;
         }
 
@@ -67,13 +72,13 @@ namespace CookieCode.DotNetTools.Commands.Alias
             lines.Add($"@echo off");
             lines.Add($"setlocal");
             lines.Add($"");
-            lines.Add($"set EXE={exePath}");
-            lines.Add($"set SHOULD_WAIT={(isNoWait ? 0 : 1)}");
+            lines.Add($"set {EXE_PATH}={exePath}");
+            lines.Add($"set {EXE_WAIT}={(isNoWait ? 0 : 1)}");
             lines.Add($"");
-            lines.Add($"if %SHOULD_WAIT%==1 (");
-            lines.Add($"    \"%EXE%\" %*");
+            lines.Add($"if %EXE_WAIT%==1 (");
+            lines.Add($"    \"%EXE_PATH%\" %*");
             lines.Add($") else (");
-            lines.Add($"    start \"\" \"%EXE%\" %*"); 
+            lines.Add($"    start \"\" \"%EXE_PATH%\" %*"); 
             lines.Add($")");
             lines.Add($"");
             lines.Add($"endlocal");

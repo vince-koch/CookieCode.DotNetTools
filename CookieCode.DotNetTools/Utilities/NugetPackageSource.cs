@@ -6,6 +6,6 @@
 
         public required string Location { get; set; }
 
-        public int ProtocolVersion { get; set; }
+        public required int ProtocolVersion { get; set; }
     }
 }

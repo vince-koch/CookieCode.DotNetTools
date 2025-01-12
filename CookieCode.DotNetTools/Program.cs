@@ -24,7 +24,7 @@ namespace CookieCode.DotNetTools
                         {
                             config.SetDescription("Manage aliases to executable applications");
                             config.SetDefaultCommand<AliasCreateCommand>();
-                            config.AddCommand<AliasCreateCommand>("create");
+                            config.AddCommand<AliasCreateCommand>("create").WithAlias("add");
                             config.AddCommand<AliasHomeCommand>("home");
                             config.AddCommand<AliasListCommand>("list");
                         });
@@ -46,8 +46,8 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<SourceZipBinCommand>("bin").WithAlias("zip-bin").WithAlias("bin-zip");
                         });
 
-                        config.AddCommand<ZipCommand>("zip");
                         config.AddCommand<UnzipCommand>("unzip");
+                        config.AddCommand<ZipCommand>("zip");
                     });
 
                 var exitCode = await app.RunAsync(args);
