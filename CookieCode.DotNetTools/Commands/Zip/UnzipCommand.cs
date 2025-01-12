@@ -10,15 +10,15 @@ namespace CookieCode.DotNetTools.Commands.Zip
     {
         public class Settings : CommandSettings
         {
-            [CommandOption("-z|--zip [ZipPath]")]
+            [CommandOption("-z|--zip <ZipPath>")]
             [Description("Source zip archive")]
-            public string ZipPath { get; set; }
+            public required string ZipPath { get; set; }
 
-            [CommandOption("-t|--target [TargetPath]")]
+            [CommandOption("-t|--target <TargetPath>")]
             [Description("Target folder")]
-            public string TargetPath { get; set; }
+            public required string TargetPath { get; set; }
 
-            [CommandOption("-o|--overwrite <Overwrite>")]
+            [CommandOption("-o|--overwrite")]
             [Description("Overwrite files")]
             public bool OverwriteFiles { get; set; } = true;
         }

@@ -15,13 +15,13 @@ namespace CookieCode.DotNetTools.Commands.Zip
     {
         public class Settings : CommandSettings
         {
-            [CommandOption("-s|--source <SourcePath>")]
+            [CommandOption("-s|--source <SourcePaths>")]
             [Description("Source paths")]
-            public IEnumerable<string> SourcePaths { get; set; }
+            public required IEnumerable<string> SourcePaths { get; set; }
 
-            [CommandOption("-z|--zip [ZipPath]")]
+            [CommandOption("-z|--zip <ZipPath>")]
             [Description("Zip archive path")]
-            public string ZipPath { get; set; }
+            public required string ZipPath { get; set; }
         }
 
         public override int Execute(CommandContext context, Settings settings)

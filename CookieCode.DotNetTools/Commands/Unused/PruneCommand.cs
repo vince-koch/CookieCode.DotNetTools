@@ -1,20 +1,27 @@
-﻿using System;
+﻿using Spectre.Console.Cli;
+
+using System;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
-using CommandLine;
-
-namespace CookieCode.DotNetTools.Commands
+namespace CookieCode.DotNetTools.Commands.Unused
 {
-    [Verb("prune", HelpText = "Remove empty folders")]
-    public class PruneCommand : ICommand
+    //[Verb("prune", HelpText = "Remove empty folders")]
+    [Description("Remove empty folders")]
+    public class PruneCommand : Command<PruneCommand.Settings>
     {
-        [Value(0, HelpText = "Starting directory")]
-        public string DirectoryPath { get; set; }
-
-        public void Execute()
+        public class Settings : CommandSettings
         {
-            var directory = DirectoryPath ?? Directory.GetCurrentDirectory();
+            //[Value(0, HelpText = "Starting directory")]
+            [CommandArgument(0, "[start-directory]")]
+            [Description("The directory to start pruning from, or the current directory if not specified")]
+            public string? DirectoryPath { get; set; }
+        }
+
+        public override int Execute(CommandContext context, Settings settings)
+        {
+            var directory = settings.DirectoryPath ?? Directory.GetCurrentDirectory();
 
             if (!Directory.Exists(directory))
             {
@@ -23,6 +30,8 @@ namespace CookieCode.DotNetTools.Commands
 
             var pruned = PruneDirectories(directory);
             Console.WriteLine($"{pruned} folders pruned");
+
+            return 0;
         }
 
         private static int PruneDirectories(string directory)

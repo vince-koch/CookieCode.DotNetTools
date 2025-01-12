@@ -12,12 +12,12 @@ namespace CookieCode.DotNetTools.Commands.Source
     {
         public class Settings : CommandSettings
         {
-            [CommandOption("-f|--folder")]
+            [CommandOption("-f|--folder <root-folder>")]
             [Description("Root folder to begin processing at;  Defaults to current working directory")]
-            public string RootFolder { get; set; }
+            public string? RootFolder { get; set; }
 
-            [CommandOption("-n|--namespace")]
-            public string RootNamespace { get; set; }
+            [CommandOption("-n|--namespace <namespace>")]
+            public required string RootNamespace { get; set; }
         }
 
         public override int Execute(CommandContext context, Settings settings)
@@ -46,7 +46,7 @@ namespace CookieCode.DotNetTools.Commands.Source
             };
 
             var files = patterns
-                .SelectMany(pattern => Directory.GetFiles(settings.RootFolder, pattern, options))
+                .SelectMany(pattern => Directory.GetFiles(settings.RootFolder.ThrowIfNull(), pattern, options))
                 .Distinct()
                 .ToArray();
 
@@ -60,8 +60,8 @@ namespace CookieCode.DotNetTools.Commands.Source
             for (var i = 0; i < files.Length; i++)
             {
                 var file = files[i];
-                var directory = Path.GetDirectoryName(file);
-                var relativePath = Path.GetRelativePath(settings.RootFolder, directory);
+                var directory = Path.GetDirectoryName(file).ThrowIfNull();
+                var relativePath = Path.GetRelativePath(settings.RootFolder.ThrowIfNull(), directory);
                 var relativeNamespace = relativePath.Replace('\\', '.').Replace('/', '.');
 
                 var lines = File.ReadAllLines(file);

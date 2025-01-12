@@ -11,7 +11,7 @@ namespace CookieCode.DotNetTools.Commands.Alias
     {
         private static string PATH
         {
-            get => Environment.GetEnvironmentVariable(nameof(PATH), EnvironmentVariableTarget.User);
+            get => Environment.GetEnvironmentVariable(nameof(PATH), EnvironmentVariableTarget.User) ?? string.Empty;
             set => Environment.SetEnvironmentVariable(nameof(PATH), value, EnvironmentVariableTarget.User);
         }
 

@@ -36,7 +36,7 @@ namespace CookieCode.DotNetTools.Utilities
 
         private HttpRequestMessage ParseFirstLine(StreamReader reader)
         {
-            var firstLine = reader.ReadLine().Split(' ');
+            var firstLine = (reader.ReadLine() ?? string.Empty).Split(' ');
 
             var request = new HttpRequestMessage();
             request.Method = new HttpMethod(firstLine[0]);
@@ -71,7 +71,7 @@ namespace CookieCode.DotNetTools.Utilities
             return dictionary;
         }
 
-        private HttpContent ParseContent(StreamReader reader, HttpRequestMessage request, Dictionary<string, string[]> headers)
+        private HttpContent? ParseContent(StreamReader reader, HttpRequestMessage request, Dictionary<string, string[]> headers)
         {
             if (reader.EndOfStream)
             {

@@ -18,17 +18,17 @@ namespace CookieCode.DotNetTools.Commands.Source
     {
         public class Settings : CommandSettings
         {
-            [CommandOption("-s|--source")]
-            [Description("Set the starting folder")]
-            public string SourcePath { get; set; }
+            [CommandOption("-s|--source <SourcePath>")]
+            [Description("Set the starting folder; if not provided the current directory will be selected")]
+            public string? SourcePath { get; set; }
 
-            [CommandOption("-z|--zip")]
-            [Description("Path of the zip file")]
-            public string ZipPath { get; set; }
+            [CommandOption("-z|--zip <ZipPath>")]
+            [Description("Path of the zip file; if not provided a new zip will be placed in the source directory")]
+            public string? ZipPath { get; set; }
 
-            [CommandOption("-r|--rule")]
+            [CommandOption("-i|--ignore <IgnorePattern>")]
             [Description("Add one or more exclude pattern rules")]
-            public IEnumerable<string> Rules { get; set; }
+            public IEnumerable<string>? IgnorePatterns { get; set; }
         }
 
         public override int Execute(CommandContext context, Settings settings)
@@ -46,11 +46,11 @@ namespace CookieCode.DotNetTools.Commands.Source
                 : GitIgnoreUtil.CreateDefaultIgnoreList();
 
             ignoreList.AddRule(".git/");
-            ignoreList.AddRules(settings.Rules);
+            ignoreList.AddRules(settings.IgnorePatterns);
 
             var files = GitIgnoreUtil.GetFiles(ignoreList, searchDirectory);
 
-            var zipFilePath = settings.ZipPath ?? searchDirectory + ".zip";
+            var zipFilePath = settings.ZipPath ?? Path.Combine(searchDirectory, Path.GetFileName(searchDirectory) + ".zip");
             CreateZipFile(zipFilePath, searchDirectory, files);
 
             Console.ForegroundColor = ConsoleColor.Green;

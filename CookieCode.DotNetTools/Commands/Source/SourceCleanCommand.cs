@@ -16,13 +16,13 @@ namespace CookieCode.DotNetTools.Commands.Source
     {
         public class Settings : CommandSettings
         {
-            [CommandOption("-s|--source")]
+            [CommandOption("-s|--source <starting-folder>")]
             [Description("Set the starting folder")]
-            public string SourcePath { get; set; }
+            public required string SourcePath { get; set; }
 
-            [CommandOption("-r|--rules")]
+            [CommandOption("-e|--exclude")]
             [Description("Add one or more exclude pattern rules")]
-            public IEnumerable<string> Rules { get; set; }
+            public IEnumerable<string>? ExcludePatterns { get; set; }
 
             [CommandOption("-d|--dry")]
             [Description("List paths that will be removed")]
@@ -47,7 +47,7 @@ namespace CookieCode.DotNetTools.Commands.Source
                 ? new IgnoreList(gitIgnorePath)
                 : GitIgnoreUtil.CreateDefaultIgnoreList();
 
-            ignoreList.AddRules(settings.Rules);
+            ignoreList.AddRules(settings.ExcludePatterns);
 
             // get the list of ignored files, but don't look at anything in git
             var paths = GitIgnoreUtil.GetIgnoredPaths(ignoreList, searchDirectory);

@@ -1,17 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using CommandLine;
-
-using CookieCode.DotNetTools.Commands;
-using CookieCode.DotNetTools.Commands.Alias;
+﻿using CookieCode.DotNetTools.Commands.Alias;
 using CookieCode.DotNetTools.Commands.Nvm;
 using CookieCode.DotNetTools.Commands.Source;
 using CookieCode.DotNetTools.Commands.Zip;
 
 using Spectre.Console.Cli;
+
+using System;
+using System.Threading.Tasks;
 
 namespace CookieCode.DotNetTools
 {
@@ -21,15 +16,6 @@ namespace CookieCode.DotNetTools
         {
             try
             {
-                //var commandTypes = typeof(Program).Assembly.GetTypes()
-                //    .Where(type => type.IsClass && !type.IsAbstract)
-                //    .Where(type => typeof(ICommand).IsAssignableFrom(type))
-                //    .ToArray();
-                //
-                //Parser.Default.ParseArguments(args, commandTypes)
-                //    .WithParsed<ICommand>(command => command.Execute())
-                //    .WithNotParsed(errors => exitCode = 2);
-
                 var app = new CommandApp();
 
                 app.Configure(config =>
@@ -60,7 +46,7 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<SourceZipBinCommand>("bin").WithAlias("zip-bin").WithAlias("bin-zip");
                         });
 
-                        config.AddCommand<ZipCommand>("unzip");
+                        config.AddCommand<ZipCommand>("zip");
                         config.AddCommand<UnzipCommand>("unzip");
                     });
 

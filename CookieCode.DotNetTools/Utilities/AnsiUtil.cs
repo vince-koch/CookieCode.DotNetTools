@@ -26,13 +26,13 @@ namespace CookieCode.DotNetTools.Utilities
             }
         }
 
-        public static bool Confirm(string confirmText, bool? defaultValue)
+        public static bool Confirm(string confirmText, bool defaultValue = true)
         {
             var choice = Ask(
                 confirmText,
                 ConsoleKey.Y,
                 ConsoleKey.N,
-                defaultValue.HasValue ? ConsoleKey.Enter : null);
+                defaultValue ? ConsoleKey.Enter : null);
 
             switch (choice)
             {
@@ -45,8 +45,8 @@ namespace CookieCode.DotNetTools.Utilities
                     return false;
 
                 case ConsoleKey.Enter:
-                    WriteUserResponse(defaultValue.Value ? ConsoleKey.Y : ConsoleKey.N);
-                    return defaultValue.Value;
+                    WriteUserResponse(defaultValue ? ConsoleKey.Y : ConsoleKey.N);
+                    return defaultValue;
 
                 default:
                     throw new NotImplementedException();

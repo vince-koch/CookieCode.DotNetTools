@@ -1,26 +1,33 @@
-﻿using System;
+﻿using CookieCode.DotNetTools.Utilities;
+
+using Spectre.Console.Cli;
+
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 
-using CommandLine;
-
-using CookieCode.DotNetTools.Utilities;
-
-namespace CookieCode.DotNetTools.Commands
+namespace CookieCode.DotNetTools.Commands.Unused
 {
-    [Verb("handle", HelpText = "A tool to identify which process has a file or directory handle locked, and optionally kill the process.  Note that this tool works by downloading Microsoft SysInternals handle.exe and parsing it's output.")]
-    public class HandleCommand : ICommand
+    //[Verb("handle", HelpText = "A tool to identify which process has a file or directory handle locked, and optionally kill the process.  Note that this tool works by downloading Microsoft SysInternals handle.exe and parsing it's output.")]
+    [Description("A tool to identify which process has a file or directory handle locked, and optionally kill the process.  Note that this tool works by downloading Microsoft SysInternals handle.exe and parsing it's output.")]
+    public class HandleCommand : Command<HandleCommand.Settings>
     {
-        [Value(0, HelpText = "File or directory to look for")]
-        public string FileOrDirectory { get; set; }
-
-        public void Execute()
+        public class Settings : CommandSettings
         {
-            var processes = CheckLocks(FileOrDirectory);
+            //[Value(0, HelpText = "File or directory to look for")]
+            [CommandArgument(0, "<file-or-directory>")]
+            [Description("File or directory to look for")]
+            public required string FileOrDirectory { get; set; }
+        }
+
+        public override int Execute(CommandContext context, Settings settings)
+        {
+            var processes = CheckLocks(settings.FileOrDirectory);
             while (processes.Any())
             {
                 Console.WriteLine();
@@ -39,13 +46,15 @@ namespace CookieCode.DotNetTools.Commands
                         break;
 
                     case ConsoleKey.R:
-                        processes = CheckLocks(FileOrDirectory);
+                        processes = CheckLocks(settings.FileOrDirectory);
                         break;
 
                     default:
-                        return;
+                        break;
                 }
             }
+
+            return 0;
         }
 
         private Process[] CheckLocks(string path)
@@ -128,7 +137,7 @@ namespace CookieCode.DotNetTools.Commands
             startInfo.RedirectStandardOutput = true;
             startInfo.UseShellExecute = false;
 
-            using (var process = Process.Start(startInfo))
+            using (var process = Process.Start(startInfo).ThrowIfNull())
             {
                 process.WaitForExit();
 
@@ -141,7 +150,7 @@ namespace CookieCode.DotNetTools.Commands
 
         private void DownloadHandleExe()
         {
-            using (var client = new WebClient())
+            using (var client = new HttpClient())
             {
                 var handleZip = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "handle.zip");
 
@@ -168,7 +177,7 @@ namespace CookieCode.DotNetTools.Commands
 
             // if we just killed off explorer then restart it
             if (processes.Any(p => string.Equals(
-                Path.GetFileName(p.MainModule.FileName),
+                Path.GetFileName(p.MainModule.ThrowIfNull().FileName),
                 "explorer.exe",
                 StringComparison.OrdinalIgnoreCase)))
             {

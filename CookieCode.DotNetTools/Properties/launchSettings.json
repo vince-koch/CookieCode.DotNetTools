@@ -2,7 +2,8 @@
   "profiles": {
     "CookieCode.DotNetTools": {
         "commandName": "Project",
-        "commandLineArgs": "source bin --source bin\\Debug\\net8.0",
+        "commandLineArgs": "",
+        "___commandLineArgs": "source bin --source bin\\Debug\\net8.0",
         "workingDirectory": ".\\"
     }
   }

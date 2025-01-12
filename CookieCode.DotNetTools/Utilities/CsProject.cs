@@ -8,9 +8,8 @@ namespace CookieCode.DotNetTools.Utilities
         // <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
         // <Project Sdk="Microsoft.NET.Sdk">
 
-        public string Path { get; }
+        public string FilePath { get; }
 
-        private readonly string _path;
         private readonly XDocument _document;
 
         public string Name
@@ -19,7 +18,7 @@ namespace CookieCode.DotNetTools.Utilities
             {
                 if (IsDotNetCore)
                 {
-                    var name = System.IO.Path.GetFileNameWithoutExtension(Path);
+                    var name = System.IO.Path.GetFileNameWithoutExtension(FilePath);
                     return name;
                 }
                 else
@@ -47,12 +46,12 @@ namespace CookieCode.DotNetTools.Utilities
             }
         }
 
-        public string Sdk => _document.Root.Element("Sdk")?.Value;
+        public string? Sdk => _document.Root?.Element("Sdk")?.Value;
 
-        public CsProject(string path)
+        public CsProject(string filePath)
         {
-            _path = path;
-            _document = XDocument.Load(_path);
+            FilePath = filePath;
+            _document = XDocument.Load(FilePath);
         }
     }
 }

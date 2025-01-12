@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CookieCode.DotNetTools.Utilities;
+
+using Spectre.Console.Cli;
+
+using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using CommandLine;
-
-using CookieCode.DotNetTools.Utilities;
-
-namespace CookieCode.DotNetTools.Commands
+namespace CookieCode.DotNetTools.Commands.Unused
 {
-    [Verb("pack", HelpText = "")]
-    public class PackCommand : ICommand
+    //[Verb("pack", HelpText = "")]
+    [Description("Pack a folder, project or solution")]
+    public class PackCommand : Command<PackCommand.Settings>
     {
-        [Value(0, HelpText = "Source folder, project, or solution")]
-        public string SourcePath { get; set; }
-
-        public void Execute()
+        public class Settings : CommandSettings
         {
-            var sourcePath = SourcePath ?? Directory.GetCurrentDirectory();
+            //[Value(0, HelpText = "Source folder, project, or solution")]
+            [CommandArgument(0, "<source-path>")]
+            [Description("Source folder, project, or solution")]
+            public required string SourcePath { get; set; }
+        }
+
+        public override int Execute(CommandContext context, Settings settings)
+        {
+            var sourcePath = settings.SourcePath ?? Directory.GetCurrentDirectory();
 
             if (Directory.Exists(sourcePath))
             {
@@ -33,6 +35,8 @@ namespace CookieCode.DotNetTools.Commands
             {
                 PackProject(sourcePath);
             }
+
+            return 0;
         }
 
         private static void PackFolder(string folderPath)

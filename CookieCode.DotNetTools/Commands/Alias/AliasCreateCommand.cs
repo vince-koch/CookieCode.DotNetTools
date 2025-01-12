@@ -14,13 +14,13 @@ namespace CookieCode.DotNetTools.Commands.Alias
     {
         public class Settings : CommandSettings
         {
-            [CommandArgument(0, "[alias]")]
+            [CommandArgument(0, "<alias>")]
             [Description("Name for the alias")]
-            public string Alias { get; set; }
+            public required string Alias { get; set; }
 
-            [CommandArgument(1, "[executable]")]
+            [CommandArgument(1, "<executable>")]
             [Description("Path to the target executable")]
-            public string? ExePath { get; set; }
+            public required string ExePath { get; set; }
 
             [CommandOption("--nowait")]
             [Description("Do not wait for program to complete; Primarily useful for launching GUI applications;  Default=false")]

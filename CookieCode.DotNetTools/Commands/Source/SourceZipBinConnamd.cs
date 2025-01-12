@@ -18,17 +18,17 @@ namespace CookieCode.DotNetTools.Commands.Source
     {
         public class Settings : CommandSettings
         {
-            [CommandOption($"-s|--source <{nameof(SourcePath)}>")]
+            [CommandOption($"-s|--source <path>")]
             [Description("Set the starting folder; Defaut is current working directory")]
             public string? SourcePath { get; set; }
 
-            [CommandOption("-z|--zip")]
+            [CommandOption($"-z|--zip <path>")]
             [Description("Path of the zip file")]
-            public string ZipPath { get; set; }
+            public string? ZipPath { get; set; }
 
-            [CommandOption("-r|--rule")]
+            [CommandOption($"-i|--ignore <path>")]
             [Description("Add one or more exclude pattern rules")]
-            public IEnumerable<string> Rules { get; set; }
+            public IEnumerable<string>? IgnoreRules { get; set; }
         }
 
         public override int Execute(CommandContext context, Settings settings)
@@ -44,7 +44,7 @@ namespace CookieCode.DotNetTools.Commands.Source
             ignoreList.AddRule("appsettings.*.json");
             ignoreList.AddRule("config.json");
             ignoreList.AddRule("config.*.json");
-            ignoreList.AddRules(settings.Rules ?? Array.Empty<string>());
+            ignoreList.AddRules(settings.IgnoreRules ?? Array.Empty<string>());
 
             var files = GitIgnoreUtil.GetFiles(ignoreList, searchDirectory);
 
