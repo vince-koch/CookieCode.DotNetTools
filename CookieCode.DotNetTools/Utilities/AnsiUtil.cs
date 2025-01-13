@@ -5,7 +5,7 @@ namespace CookieCode.DotNetTools.Utilities
 {
     public static class AnsiUtil
     {
-        public static string UserColor = Ansi.FGreen;
+        public static string UserColor = Ansi.Fg.Green;
 
         public static ConsoleKey Ask(string askText, params ConsoleKey?[] validKeys)
         {
@@ -56,7 +56,7 @@ namespace CookieCode.DotNetTools.Utilities
         public static void WriteProgress(string text)
         {
             //Console.WriteLine($"\r{text}{Ansi.ClearLineRight}");
-            Console.Write($"\r{text}{Ansi.ClearLineRight}");
+            Console.Write($"\r{text}{Ansi.Clear.LineRight}");
         }
 
         private static void WriteUserResponse(ConsoleKey consoleKey)

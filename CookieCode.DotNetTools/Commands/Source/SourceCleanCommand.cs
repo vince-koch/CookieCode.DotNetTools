@@ -1,13 +1,12 @@
 ﻿using CookieCode.DotNetTools.Utilities;
 
-using MAB.DotIgnore;
-
 using Spectre.Console.Cli;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 
 namespace CookieCode.DotNetTools.Commands.Source
 {
@@ -41,31 +40,26 @@ namespace CookieCode.DotNetTools.Commands.Source
                 throw new DirectoryNotFoundException(searchDirectory);
             }
 
-            var gitIgnorePath = Path.Combine(searchDirectory, ".gitignore");
+            var gitIgnore = new GitIgnore();
+            gitIgnore.AddRule(".git/"); // ignore the .git folder
+            gitIgnore.AddRules(settings.ExcludePatterns ?? Array.Empty<string>());
 
-            var ignoreList = File.Exists(gitIgnorePath)
-                ? new IgnoreList(gitIgnorePath)
-                : GitIgnoreUtil.CreateDefaultIgnoreList();
+            List<string> deletePaths = gitIgnore
+                .Process(
+                    searchDirectory,
+                    isRecursive: true,
+                    canReadGitIgnores: true,
+                    info => info.IsIgnored)
+                .Select(info => info.Path)
+                .ToList();
 
-            ignoreList.AddRules(settings.ExcludePatterns);
+            deletePaths.ForEach(path => Console.WriteLine(path));
 
-            // get the list of ignored files, but don't look at anything in git
-            var paths = GitIgnoreUtil.GetIgnoredPaths(ignoreList, searchDirectory);
-            paths = GitIgnoreUtil.RemoveGitFolder(paths);
-
-            if (settings.IsDryRun)
-            {
-                foreach (var path in paths)
-                {
-                    Console.WriteLine(path);
-                }
-            }
-
-            var confirmText = $"Delete {Ansi.FCyan}{paths.Count}{Ansi.Reset} paths? [y]es, [N]o ";
+            var confirmText = $"Delete {Ansi.Fg.Cyan}{deletePaths.Count}{Ansi.Reset} paths? [y]es, [N]o ";
             var isConfirmed = settings.IsConfirmed || AnsiUtil.Confirm(confirmText, false);
             if (isConfirmed)
             {
-                foreach (var path in paths)
+                foreach (var path in deletePaths)
                 {
                     FileSystemUtil.Delete(path);
                 }

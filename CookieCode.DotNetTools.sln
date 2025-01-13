@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CookieCode.DotNetTools", "CookieCode.DotNetTools\CookieCode.DotNetTools.csproj", "{C9C70363-EE8F-4A5A-95F8-57162BD7E7FA}"
 EndProject
@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MAB.DotIgnore", "MAB.DotIgnore\MAB.DotIgnore.csproj", "{BE83C0F6-3F0D-4F57-8DBF-9E37E92180A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +22,10 @@ Global
 		{C9C70363-EE8F-4A5A-95F8-57162BD7E7FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9C70363-EE8F-4A5A-95F8-57162BD7E7FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9C70363-EE8F-4A5A-95F8-57162BD7E7FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE83C0F6-3F0D-4F57-8DBF-9E37E92180A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE83C0F6-3F0D-4F57-8DBF-9E37E92180A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE83C0F6-3F0D-4F57-8DBF-9E37E92180A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE83C0F6-3F0D-4F57-8DBF-9E37E92180A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

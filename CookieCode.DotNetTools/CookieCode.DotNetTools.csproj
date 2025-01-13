@@ -34,6 +34,8 @@
 
     <ItemGroup>
         <PackageReference Include="CliWrap" Version="3.7.0" />
+        <PackageReference Include="Ignore" Version="0.2.1" />
+        <!-- <PackageReference Include="Ignore" Version="0.2.1" /> -->
         <PackageReference Include="MAB.DotIgnore" Version="3.0.2" />
         <PackageReference Include="NuGet.Protocol" Version="6.12.1" />
         <PackageReference Include="Spectre.Console" Version="0.49.1" />

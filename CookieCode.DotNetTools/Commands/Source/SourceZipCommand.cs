@@ -1,14 +1,11 @@
 ﻿using CookieCode.DotNetTools.Utilities;
 
-using MAB.DotIgnore;
-
 using Spectre.Console.Cli;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 
 namespace CookieCode.DotNetTools.Commands.Source
@@ -39,51 +36,34 @@ namespace CookieCode.DotNetTools.Commands.Source
                 throw new DirectoryNotFoundException(searchDirectory);
             }
 
-            var gitIgnorePath = Path.Combine(searchDirectory, ".gitignore");
-
-            var ignoreList = File.Exists(gitIgnorePath)
-                ? new IgnoreList(gitIgnorePath)
-                : GitIgnoreUtil.CreateDefaultIgnoreList();
-
-            ignoreList.AddRule(".git/");
-            ignoreList.AddRules(settings.IgnorePatterns);
-
-            var files = GitIgnoreUtil.GetFiles(ignoreList, searchDirectory);
-
+            // todo: a better job of zip file naming
             var zipFilePath = settings.ZipPath ?? Path.Combine(searchDirectory, Path.GetFileName(searchDirectory) + ".zip");
-            CreateZipFile(zipFilePath, searchDirectory, files);
 
+            var gitIgnore = new GitIgnore();
+            gitIgnore.AddRule(".git/");
+            gitIgnore.AddRules(settings.IgnorePatterns ?? Array.Empty<string>());
+
+            var files = gitIgnore
+                .Process(
+                    searchDirectory,
+                    isRecursive: true,
+                    canReadGitIgnores: true,
+                    record => !record.IsDirectory && !record.IsIgnored) // select only non ignored files
+                .Select(record => record.Path)
+                .ToList();
+
+            var fileCount = ZipUtil.CreateZipFile(
+                zipFilePath,
+                files,
+                (fileCount, filename) => AnsiUtil.WriteProgress($"{Ansi.Fg.Cyan}{fileCount}{Ansi.Reset}: {zipFilePath}"));
+
+            AnsiUtil.WriteProgress($"{Ansi.Fg.Cyan}{fileCount}{Ansi.Reset} files => {Ansi.Fg.Magenta}{zipFilePath}{Ansi.Reset}");
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Success");
+            Console.ResetColor();
 
             return 0;
-        }
-
-        private void CreateZipFile(string zipPath, string searchDirectory, List<string> files)
-        {
-            if (!files.Any())
-            {
-                return;
-            }
-
-            long fileCount = 0;
-
-            using (var stream = new FileStream(zipPath, FileMode.Create))
-            using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
-            {
-                foreach (var file in files)
-                {
-                    fileCount++;
-                    var relativePath = Path.GetRelativePath(searchDirectory, file);
-                    var shortPath = PathUtil.GetShortPath(relativePath);
-                    AnsiUtil.WriteProgress($"{fileCount}: {shortPath}");
-
-                    archive.CreateEntryFromFile(file, relativePath);
-                }
-            }
-
-            AnsiUtil.WriteProgress($"{fileCount} files => {zipPath}");
-            Console.WriteLine();
         }
     }
 }

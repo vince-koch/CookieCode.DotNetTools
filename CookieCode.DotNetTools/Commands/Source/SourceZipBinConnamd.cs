@@ -1,14 +1,11 @@
 ﻿using CookieCode.DotNetTools.Utilities;
 
-using MAB.DotIgnore;
-
 using Spectre.Console.Cli;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 
 namespace CookieCode.DotNetTools.Commands.Source
@@ -22,9 +19,9 @@ namespace CookieCode.DotNetTools.Commands.Source
             [Description("Set the starting folder; Defaut is current working directory")]
             public string? SourcePath { get; set; }
 
-            [CommandOption($"-z|--zip <path>")]
-            [Description("Path of the zip file")]
-            public string? ZipPath { get; set; }
+            [CommandOption($"-o|--output <path>")]
+            [Description("Path to a directory to place zip files in")]
+            public string? OutputFolder { get; set; }
 
             [CommandOption($"-i|--ignore <path>")]
             [Description("Add one or more exclude pattern rules")]
@@ -39,52 +36,45 @@ namespace CookieCode.DotNetTools.Commands.Source
                 throw new DirectoryNotFoundException($"Directory not found: {searchDirectory}");
             }
 
-            var ignoreList = new IgnoreList();
-            ignoreList.AddRule("appsettings.json");
-            ignoreList.AddRule("appsettings.*.json");
-            ignoreList.AddRule("config.json");
-            ignoreList.AddRule("config.*.json");
-            ignoreList.AddRules(settings.IgnoreRules ?? Array.Empty<string>());
+            var binFolders = Directory.GetDirectories(searchDirectory, "bin", SearchOption.AllDirectories);
+            foreach (var binFolder in binFolders)
+            {
+                // todo: a better job of zip file naming
+                var zipFilePath = Path.Combine(
+                    PathUtil.NormalizePath(settings.OutputFolder ?? Directory.GetCurrentDirectory()),
+                    Path.GetFileName(Path.GetDirectoryName(binFolder)) + ".zip");
 
-            var files = GitIgnoreUtil.GetFiles(ignoreList, searchDirectory);
+                var gitIgnore = new GitIgnore();
+                gitIgnore.AddRule("[Nn]upkg/"); // ignore nupkg/ folders
+                gitIgnore.AddRule("!**/[Bb]in/**/appsettings.json"); // ignore config files
+                gitIgnore.AddRule("!**/[Bb]in/**/appsettings.*.json"); // ignore config files
+                gitIgnore.AddRule("!**/[Bb]in/**/config.json"); // ignore config files
+                gitIgnore.AddRule("!**/[Bb]in/**/config.*.json"); // ignore config files
+                gitIgnore.AddRules(settings.IgnoreRules ?? Array.Empty<string>());
 
-            // todo: a better job of zip file naming
-            var searchDirectoryName = Path.GetFileName(searchDirectory);
-            var zipFilePath = settings.ZipPath ?? Path.Combine(searchDirectory, searchDirectoryName + ".zip");
-            CreateZipFile(zipFilePath, searchDirectory, files);
+                var files = gitIgnore
+                    .Process(
+                        binFolder,
+                        isRecursive: true,
+                        canReadGitIgnores: false,
+                        record => !record.IsDirectory && !record.IsIgnored)
+                    .Select(record => record.Path)
+                    .ToList();
+
+                var fileCount = ZipUtil.CreateZipFile(
+                    zipFilePath,
+                    files,
+                    (fileCount, filename) => AnsiUtil.WriteProgress($"{Ansi.Fg.Cyan}{fileCount}{Ansi.Reset}: {zipFilePath}"));
+
+                AnsiUtil.WriteProgress($"{Ansi.Fg.Cyan}{fileCount}{Ansi.Reset} files => {Ansi.Fg.Magenta}{zipFilePath}{Ansi.Reset}");
+                Console.WriteLine();
+            }
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Success");
+            Console.ResetColor();
 
             return 0;
-        }
-
-        private void CreateZipFile(string zipPath, string searchDirectory, List<string> files)
-        {
-            if (!files.Any())
-            {
-                return;
-            }
-
-            long fileCount = 0;
-
-            using (var stream = new FileStream(zipPath, FileMode.Create))
-            using (var archive = new ZipArchive(stream, ZipArchiveMode.Create, true))
-            {
-                foreach (var file in files)
-                {
-                    fileCount++;
-                    var relativePath = Path.GetRelativePath(searchDirectory, file);
-                    var shortPath = PathUtil.GetShortPath(relativePath);
-                    var progress = $"{fileCount}: {shortPath}";
-                    AnsiUtil.WriteProgress(progress);
-
-                    archive.CreateEntryFromFile(file, relativePath);
-                }
-            }
-
-            AnsiUtil.WriteProgress($"{fileCount} files => {zipPath}");
-            Console.WriteLine();
         }
     }
 }
