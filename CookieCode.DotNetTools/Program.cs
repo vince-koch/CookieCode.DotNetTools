@@ -1,4 +1,5 @@
 ﻿using CookieCode.DotNetTools.Commands.Alias;
+using CookieCode.DotNetTools.Commands.Experimental;
 using CookieCode.DotNetTools.Commands.Nvm;
 using CookieCode.DotNetTools.Commands.Source;
 using CookieCode.DotNetTools.Commands.Zip;
@@ -46,8 +47,13 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<SourceZipBinCommand>("bin").WithAlias("zip-bin").WithAlias("bin-zip");
                         });
 
-                        config.AddCommand<UnzipCommand>("unzip");
                         config.AddCommand<ZipCommand>("zip");
+                        config.AddCommand<UnzipCommand>("unzip");
+
+                        config.AddBranch("mongo", config =>
+                        {
+                            config.AddCommand<MongoDockerWatchCommand>("docker");
+                        });
                     });
 
                 var exitCode = await app.RunAsync(args);
