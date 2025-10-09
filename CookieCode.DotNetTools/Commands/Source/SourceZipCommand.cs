@@ -1,5 +1,5 @@
 ﻿using CookieCode.DotNetTools.Utilities;
-
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 using System;
@@ -30,14 +30,13 @@ namespace CookieCode.DotNetTools.Commands.Source
 
         public override int Execute(CommandContext context, Settings settings)
         {
-            var searchDirectory = settings.SourcePath ?? Directory.GetCurrentDirectory();
-            if (Directory.Exists(searchDirectory))
+            var searchDirectory = Path.GetFullPath(settings.SourcePath ?? Directory.GetCurrentDirectory());
+            if (!Directory.Exists(searchDirectory))
             {
                 throw new DirectoryNotFoundException(searchDirectory);
             }
 
-            // todo: a better job of zip file naming
-            var zipFilePath = settings.ZipPath ?? Path.Combine(searchDirectory, Path.GetFileName(searchDirectory) + ".zip");
+            AnsiConsole.MarkupLine($"Source [cyan]{searchDirectory}[/]");
 
             var gitIgnore = new GitIgnore();
             gitIgnore.AddRule(".git/");
@@ -51,6 +50,13 @@ namespace CookieCode.DotNetTools.Commands.Source
                     record => !record.IsDirectory && !record.IsIgnored) // select only non ignored files
                 .Select(record => record.Path)
                 .ToList();
+
+            AnsiConsole.MarkupLine($"Found [cyan]{files.Count}[/] files");
+
+            var zipFilePath = Path.GetFullPath(
+                settings.ZipPath ?? Path.Combine(Directory.GetCurrentDirectory(), Path.GetFileName(searchDirectory) + ".zip"));
+
+            AnsiConsole.MarkupLine($"Target [cyan]{zipFilePath}[/]");
 
             var fileCount = ZipUtil.CreateZipFile(
                 zipFilePath,

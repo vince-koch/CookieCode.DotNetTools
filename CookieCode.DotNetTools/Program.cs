@@ -3,10 +3,11 @@ using CookieCode.DotNetTools.Commands.Experimental;
 using CookieCode.DotNetTools.Commands.Nvm;
 using CookieCode.DotNetTools.Commands.Source;
 using CookieCode.DotNetTools.Commands.Zip;
-
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace CookieCode.DotNetTools
@@ -21,6 +22,8 @@ namespace CookieCode.DotNetTools
 
                 app.Configure(config =>
                     {
+                        config.PropagateExceptions();
+
                         config.AddBranch("alias", config =>
                         {
                             config.SetDescription("Manage aliases to executable applications");
@@ -62,13 +65,9 @@ namespace CookieCode.DotNetTools
             }
             catch (Exception thrown)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(thrown);
+                AnsiConsole.WriteException(thrown);
+                Debug.WriteLine(thrown);
                 return 99;
-            }
-            finally
-            {
-                Console.ResetColor();
             }
         }
     }
