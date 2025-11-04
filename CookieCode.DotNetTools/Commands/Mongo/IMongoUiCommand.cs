@@ -1,4 +1,5 @@
 ﻿using Spectre.Console.Cli;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CookieCode.DotNetTools.Commands.Mongo
@@ -7,6 +8,6 @@ namespace CookieCode.DotNetTools.Commands.Mongo
     {
         string Name { get; }
 
-        Task<int> ExecuteAsync(CommandContext context, MongoUiCommandSettings settings);
+        Task<int> ExecuteAsync(CommandContext context, MongoUiCommandSettings settings, CancellationToken cancellationToken);
     }
 }

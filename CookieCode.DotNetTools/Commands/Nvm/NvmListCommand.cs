@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using CliWrap;
 using System.ComponentModel;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Nvm
 {
@@ -16,7 +17,7 @@ namespace CookieCode.DotNetTools.Commands.Nvm
         {
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(Env.Instance.NVM_HOME))
             {

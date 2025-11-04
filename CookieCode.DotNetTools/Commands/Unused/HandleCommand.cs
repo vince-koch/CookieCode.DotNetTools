@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Unused
 {
@@ -25,7 +26,7 @@ namespace CookieCode.DotNetTools.Commands.Unused
             public required string FileOrDirectory { get; set; }
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             var processes = CheckLocks(settings.FileOrDirectory);
             while (processes.Any())

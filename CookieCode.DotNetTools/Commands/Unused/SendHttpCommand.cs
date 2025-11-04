@@ -5,6 +5,7 @@ using Spectre.Console.Cli;
 using System;
 using System.ComponentModel;
 using System.Net.Http;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Unused
 {
@@ -26,7 +27,7 @@ namespace CookieCode.DotNetTools.Commands.Unused
             public int TimeoutInSeconds { get; set; } = 60;
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             var factory = new HttpRequestMessageFactory();
             var request = factory.LoadFile(settings.InputPath);

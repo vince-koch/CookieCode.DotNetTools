@@ -3,6 +3,7 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Nvm
 {
@@ -15,7 +16,7 @@ namespace CookieCode.DotNetTools.Commands.Nvm
             public string? Folder { get; set; }
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             // handle get NVM_HOME
             if (string.IsNullOrWhiteSpace(settings.Folder))

@@ -3,6 +3,7 @@ using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CookieCode.DotNetTools.Commands.Mongo
@@ -16,7 +17,7 @@ namespace CookieCode.DotNetTools.Commands.Mongo
     {
         public string Name => "mongo-express";
 
-        public override async Task<int> ExecuteAsync(CommandContext context, MongoUiCommandSettings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, MongoUiCommandSettings settings, CancellationToken cancellationToken)
         {
             await MongoUiCommandSettings.EnsureConnectionStringAsync(settings);
             await StartMongoExpress(settings);

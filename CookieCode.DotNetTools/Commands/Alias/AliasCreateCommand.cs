@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Alias
 {
@@ -34,7 +35,7 @@ namespace CookieCode.DotNetTools.Commands.Alias
 		public const string EXE_PATH = nameof(EXE_PATH);
 		public const string EXE_WAIT = nameof(EXE_WAIT);
 
-		public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(settings.Alias, nameof(settings.Alias));
             ArgumentException.ThrowIfNullOrWhiteSpace(settings.ExePath, nameof(settings.ExePath));

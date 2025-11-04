@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using System.IO.Compression;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Zip
 {
@@ -23,7 +24,7 @@ namespace CookieCode.DotNetTools.Commands.Zip
             public bool OverwriteFiles { get; set; } = true;
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             ZipFile.ExtractToDirectory(
                 settings.ZipPath,

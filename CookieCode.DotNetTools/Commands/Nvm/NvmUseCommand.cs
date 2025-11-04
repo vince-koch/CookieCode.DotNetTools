@@ -1,8 +1,9 @@
 ﻿using Spectre.Console.Cli;
-using System.Threading.Tasks;
 using System;
-using System.Linq;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CookieCode.DotNetTools.Commands.Nvm
 {
@@ -15,7 +16,7 @@ namespace CookieCode.DotNetTools.Commands.Nvm
             public string Version { get; set; } = string.Empty;
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(settings.Version))
             {

@@ -5,6 +5,7 @@ using Spectre.Console.Cli;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using System.Xml.Linq;
 using System.Xml.XPath;
 
@@ -35,7 +36,7 @@ namespace CookieCode.DotNetTools.Commands.Unused
             public VersionPart BumpPart { get; set; } = VersionPart.Build;
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             if (!File.Exists(settings.ProjectPath))
             {

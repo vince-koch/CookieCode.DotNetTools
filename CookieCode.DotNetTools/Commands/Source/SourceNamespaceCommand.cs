@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Source
 {
@@ -20,7 +21,7 @@ namespace CookieCode.DotNetTools.Commands.Source
             public required string RootNamespace { get; set; }
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             settings.RootFolder = settings.RootFolder ?? Directory.GetCurrentDirectory();
             if (!Directory.Exists(settings.RootFolder))

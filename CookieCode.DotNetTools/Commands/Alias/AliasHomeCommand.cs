@@ -5,6 +5,7 @@ using Spectre.Console.Cli;
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Alias
 {
@@ -18,7 +19,7 @@ namespace CookieCode.DotNetTools.Commands.Alias
             public string? Folder { get; set; }
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             // handle get ALIAS_HOME
             if (string.IsNullOrWhiteSpace(settings.Folder))

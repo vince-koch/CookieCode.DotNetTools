@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Alias
 {
@@ -15,7 +16,7 @@ namespace CookieCode.DotNetTools.Commands.Alias
         {
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(Env.Instance.ALIAS_HOME))
             {

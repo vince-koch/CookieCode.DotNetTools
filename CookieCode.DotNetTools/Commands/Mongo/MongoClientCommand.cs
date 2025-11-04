@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CookieCode.DotNetTools.Commands.Mongo
@@ -25,11 +26,11 @@ namespace CookieCode.DotNetTools.Commands.Mongo
             _mongoUiCommands = mongoUiCommands.ToArray();
         }
 
-        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
+        public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             await MongoUiCommandSettings.EnsureConnectionStringAsync(settings);
             var mongoClientCommand = SelectMongoClient(settings);
-            await mongoClientCommand.ExecuteAsync(context, settings);            
+            await mongoClientCommand.ExecuteAsync(context, settings, cancellationToken);            
 
             return 0;
         }

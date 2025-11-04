@@ -4,6 +4,7 @@ using Spectre.Console.Cli;
 
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Unused
 {
@@ -19,7 +20,7 @@ namespace CookieCode.DotNetTools.Commands.Unused
             public required string SourcePath { get; set; }
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             var sourcePath = settings.SourcePath ?? Directory.GetCurrentDirectory();
 

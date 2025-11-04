@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Zip
 {
@@ -24,7 +25,7 @@ namespace CookieCode.DotNetTools.Commands.Zip
             public required string ZipPath { get; set; }
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             long fileCount = 0;
 

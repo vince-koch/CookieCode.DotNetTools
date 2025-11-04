@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace CookieCode.DotNetTools.Commands.Unused
 {
@@ -19,7 +20,7 @@ namespace CookieCode.DotNetTools.Commands.Unused
             public string? DirectoryPath { get; set; }
         }
 
-        public override int Execute(CommandContext context, Settings settings)
+        public override int Execute(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
             var directory = settings.DirectoryPath ?? Directory.GetCurrentDirectory();
 
