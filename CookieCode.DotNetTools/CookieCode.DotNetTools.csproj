@@ -40,10 +40,10 @@
         <PackageReference Include="MAB.DotIgnore" Version="3.0.2" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
         <PackageReference Include="MongoDB.Driver" Version="3.5.0" />
-        <PackageReference Include="NuGet.Protocol" Version="6.12.1" />
+        <PackageReference Include="NuGet.Protocol" Version="6.14.0" />
         <PackageReference Include="Spectre.Console" Version="0.53.0" />
         <PackageReference Include="Spectre.Console.Cli" Version="0.53.0" />
-        <PackageReference Include="Terminal.Gui" Version="1.17.1" />
+        <PackageReference Include="Terminal.Gui" Version="1.19.0" />
     </ItemGroup>
 
 
