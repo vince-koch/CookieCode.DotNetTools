@@ -1,8 +1,9 @@
 ﻿using CookieCode.DotNetTools.Commands.Alias;
-using CookieCode.DotNetTools.Commands.Experimental;
+using CookieCode.DotNetTools.Commands.Mongo;
 using CookieCode.DotNetTools.Commands.Nvm;
 using CookieCode.DotNetTools.Commands.Source;
 using CookieCode.DotNetTools.Commands.Zip;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -18,7 +19,14 @@ namespace CookieCode.DotNetTools
         {
             try
             {
-                var app = new CommandApp();
+                var services = new ServiceCollection()
+                    .AddScoped<IMongoUiCommand, MongoCompassCommand>()
+                    .AddScoped<IMongoUiCommand, MongoExpressCommand>()
+                    .AddScoped<IMongoUiCommand, MongokuCommand>();
+
+                var registrar = new SpectreTypeRegistrar(services);
+
+                var app = new CommandApp(registrar);
 
                 app.Configure(config =>
                     {
@@ -31,6 +39,14 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<AliasCreateCommand>("create").WithAlias("add");
                             config.AddCommand<AliasHomeCommand>("home");
                             config.AddCommand<AliasListCommand>("list");
+                        });
+
+                        config.AddBranch("mongo", config =>
+                        {
+                            config.AddCommand<MongoClientCommand>("client").WithAlias("ui");
+                            config.AddCommand<MongoCompassCommand>("mongo-compass");
+                            config.AddCommand<MongoExpressCommand>("mongo-express");
+                            config.AddCommand<MongokuCommand>("mongoku");
                         });
 
                         config.AddBranch("nvm", config =>
@@ -52,11 +68,6 @@ namespace CookieCode.DotNetTools
 
                         config.AddCommand<ZipCommand>("zip");
                         config.AddCommand<UnzipCommand>("unzip");
-
-                        config.AddBranch("mongo", config =>
-                        {
-                            config.AddCommand<MongoDockerWatchCommand>("docker");
-                        });
                     });
 
                 var exitCode = await app.RunAsync(args);
