@@ -53,6 +53,7 @@ namespace CookieCode.DotNetTools
 
                         config.AddBranch("config", config =>
                         {
+                            config.SetDescription("View and edit config files");
                             config.AddCommand<ConfigViewCommand>("view");
                             config.AddCommand<ConfigEditCommand>("edit");
                         });
