@@ -3,7 +3,10 @@
 ## Quick Start (local)
 
 ```powershell
-dotnet pack
+dotnet clean
+dotnet build -c Release
+dotnet pack -c Release
+
 dotnet tool install -g CookieCode.DotNetTools --add-source .\CookieCode.DotNetTools\bin\Nupkg
 dotnet tool update -g CookieCode.DotNetTools --add-source .\CookieCode.DotNetTools\bin\Nupkg
 ```

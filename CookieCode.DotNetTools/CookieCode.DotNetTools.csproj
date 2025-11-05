@@ -1,55 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
-        <ApplicationIcon>cookie.ico</ApplicationIcon>
-        <PackageId>CookieCode.DotNetTools</PackageId>
-        <Version>0.1.3.0</Version>
-        <Nullable>enable</Nullable>
-        <UserSecretsId>f09e2aad-98ce-46fd-8c76-b0f3ec2dd8f5</UserSecretsId>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ApplicationIcon>cookie.ico</ApplicationIcon>
+    <PackageId>CookieCode.DotNetTools</PackageId>
+    <Version>0.1.4.0</Version>
+    <Nullable>enable</Nullable>
+    <UserSecretsId>f09e2aad-98ce-46fd-8c76-b0f3ec2dd8f5</UserSecretsId>
+  </PropertyGroup>
 
-    <PropertyGroup>
-        <PackAsTool>true</PackAsTool>
-        <ToolCommandName>cc</ToolCommandName>
-        <PackageOutputPath>bin/Nupkg</PackageOutputPath>
-        <PackageProjectUrl>https://github.com/vince-koch/CookieCode.DotNetTools</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/vince-koch/CookieCode.DotNetTools</RepositoryUrl>
-        <Description>A collection of tools to make life a little easier</Description>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>cookie.png</PackageIcon>
-        <PackageIconUrl />
-        <Company>Cookie Code</Company>
-        <Authors>Vince Koch</Authors>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageTags>dotnet tool alias bump-version cleanup fix-namespace fix-project-refs handle pack prune send-http unzip zip zip-publish zip-source</PackageTags>
-    </PropertyGroup>
-    
-    <ItemGroup>
-        <None Include="cookie.png">
-            <Pack>True</Pack>
-            <PackagePath></PackagePath>
-        </None>
-    </ItemGroup>
+  <PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>cc</ToolCommandName>
+    <PackageOutputPath>bin/Nupkg</PackageOutputPath>
+    <PackageProjectUrl>https://github.com/vince-koch/CookieCode.DotNetTools</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/vince-koch/CookieCode.DotNetTools</RepositoryUrl>
+    <Description>A collection of tools to make life a little easier</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>cookie.png</PackageIcon>
+    <PackageIconUrl />
+    <Company>Cookie Code</Company>
+    <Authors>Vince Koch</Authors>
+    <BuildProjectBeforePacking>true</BuildProjectBeforePacking>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageTags>dotnet tool alias bump-version cleanup fix-namespace fix-project-refs handle pack prune send-http unzip zip zip-publish zip-source</PackageTags>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="CliWrap" Version="3.9.0" />
-        <PackageReference Include="Docker.DotNet" Version="3.125.15" />
-        <PackageReference Include="Ignore" Version="0.2.1" />
-        <!-- <PackageReference Include="Ignore" Version="0.2.1" /> -->
-        <PackageReference Include="MAB.DotIgnore" Version="3.0.2" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.10" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.10" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
-        <PackageReference Include="MongoDB.Driver" Version="3.5.0" />
-        <PackageReference Include="NuGet.Protocol" Version="6.14.0" />
-        <PackageReference Include="Spectre.Console" Version="0.53.0" />
-        <PackageReference Include="Spectre.Console.Cli" Version="0.53.0" />
-        <PackageReference Include="Terminal.Gui" Version="1.19.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <None Include="cookie.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CliWrap" Version="3.9.0" />
+    <PackageReference Include="Docker.DotNet" Version="3.125.15" />
+    <PackageReference Include="Ignore" Version="0.2.1" />
+    <!-- <PackageReference Include="Ignore" Version="0.2.1" /> -->
+    <PackageReference Include="MAB.DotIgnore" Version="3.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
+    <PackageReference Include="MongoDB.Driver" Version="3.5.0" />
+    <PackageReference Include="NuGet.Protocol" Version="6.14.0" />
+    <PackageReference Include="Spectre.Console" Version="0.53.0" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.53.0" />
+    <PackageReference Include="Terminal.Gui" Version="1.19.0" />
+  </ItemGroup>
 
 
 </Project>

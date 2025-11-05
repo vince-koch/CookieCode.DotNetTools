@@ -86,6 +86,7 @@ namespace CookieCode.DotNetTools
 
                         config.AddCommand<ZipCommand>("zip");
                         config.AddCommand<UnzipCommand>("unzip");
+                        config.AddCommand<SpectreVersionCommand>("version");
                     });
 
                 var exitCode = await app.RunAsync(args);
