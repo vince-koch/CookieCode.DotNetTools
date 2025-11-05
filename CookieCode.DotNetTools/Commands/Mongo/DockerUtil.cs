@@ -1,11 +1,13 @@
-﻿using Docker.DotNet;
-using Docker.DotNet.Models;
-using MongoDB.Driver;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Docker.DotNet;
+using Docker.DotNet.Models;
+using MongoDB.Driver;
+using Spectre.Console;
 
 namespace CookieCode.DotNetTools.Commands.Mongo
 {
@@ -17,14 +19,28 @@ namespace CookieCode.DotNetTools.Commands.Mongo
                 : "unix:///var/run/docker.sock"))
              .CreateClient();
 
-        public static async Task<CreateContainerResponse> CreateContainerAsync(string imageName, int imagePort, Dictionary<string, string?> environment)
+        public static async Task<CreateContainerResponse> CreateContainerAsync(
+            string imageName,
+            int imagePort,
+            Dictionary<string, string?> environment,
+            Action<CreateContainerParameters>? configure = null)
         {
+            var progress = new InlineProgress();
+
+            await _dockerClient.Images.CreateImageAsync(
+                new ImagesCreateParameters { FromImage = imageName },
+                null,
+                //new Progress<JSONMessage>()
+                progress);
+
+            progress.Clear();
+
             var environmentVariables = environment
                 .Where(pair => !string.IsNullOrWhiteSpace(pair.Value))
                 .Select(pair => $"{pair.Key}={pair.Value}")
                 .ToArray();
 
-            var create = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
+            var parameters = new CreateContainerParameters
             {
                 Image = imageName,
                 Env = environmentVariables,
@@ -48,7 +64,11 @@ namespace CookieCode.DotNetTools.Commands.Mongo
                 {
                     [$"{imagePort}/tcp"] = default
                 }
-            });
+            };
+
+            configure?.Invoke(parameters);
+
+            var create = await _dockerClient.Containers.CreateContainerAsync(parameters);
 
             return create;
         }
@@ -124,6 +144,53 @@ namespace CookieCode.DotNetTools.Commands.Mongo
             }
 
             throw new TimeoutException($"MongoMan container did not become ready on port {port} within {timeoutSeconds}s.");
+        }
+
+        public static int GetNextPort()
+        {
+            using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+
+            int? port = (socket.LocalEndPoint as IPEndPoint)?.Port ?? throw new Exception("Unable to identify an available port");
+
+            return port.Value;
+        }
+
+        public class InlineProgress : IProgress<JSONMessage>
+        {
+            private readonly object _lock = new();
+            private bool _hasWritten = false;
+
+            public void Report(JSONMessage value)
+            {
+                lock (_lock)
+                {
+                    if (!string.IsNullOrEmpty(value.Status))
+                    {
+                        string line = value.ProgressMessage != null
+                            ? $"{value.Status,-15} {value.ProgressMessage,-30}"
+                            : value.Status;
+
+                        string markup =  Markup.Escape(line.PadRight(Console.WindowWidth - 1));
+
+                        AnsiConsole.Markup($"\r[gray]{markup}[/]");
+
+                        _hasWritten = true;
+                    }
+                }
+            }
+
+            public void Clear()
+            {
+                lock (_lock)
+                {
+                    if (_hasWritten)
+                    {
+                        int width = Console.WindowWidth;
+                        AnsiConsole.Markup($"\r{string.Empty.PadRight(width - 1)}\r");
+                    }
+                }
+            }
         }
     }
 }

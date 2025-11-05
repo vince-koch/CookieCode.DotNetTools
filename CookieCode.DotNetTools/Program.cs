@@ -1,8 +1,10 @@
 ﻿using CookieCode.DotNetTools.Commands.Alias;
+using CookieCode.DotNetTools.Commands.Config;
 using CookieCode.DotNetTools.Commands.Mongo;
 using CookieCode.DotNetTools.Commands.Nvm;
 using CookieCode.DotNetTools.Commands.Source;
 using CookieCode.DotNetTools.Commands.Zip;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -19,7 +21,14 @@ namespace CookieCode.DotNetTools
         {
             try
             {
+                var configuration = new ConfigurationBuilder()
+                    .AddEnvironmentVariables()
+                    .AddUserSecrets<Program>()
+                    .Build();
+
                 var services = new ServiceCollection()
+                    .AddSingleton<IConfiguration>(configuration)
+                    .AddSingleton<ConnectionStringService>()
                     .AddScoped<IMongoUiCommand, MongoCompassCommand>()
                     .AddScoped<IMongoUiCommand, MongoExpressCommand>()
                     .AddScoped<IMongoUiCommand, MongokuCommand>();
@@ -41,8 +50,17 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<AliasListCommand>("list");
                         });
 
+                        config.AddBranch("config", config =>
+                        {
+                            config.AddCommand<ConfigViewCommand>("view");
+                            config.AddCommand<ConfigEditCommand>("edit");
+                        });
+
                         config.AddBranch("mongo", config =>
                         {
+                            config.SetDescription("Useful tools and utilities for Mongo");
+                            config.SetDefaultCommand<MongoClientCommand>();
+
                             config.AddCommand<MongoClientCommand>("client").WithAlias("ui");
                             config.AddCommand<MongoCompassCommand>("mongo-compass");
                             config.AddCommand<MongoExpressCommand>("mongo-express");

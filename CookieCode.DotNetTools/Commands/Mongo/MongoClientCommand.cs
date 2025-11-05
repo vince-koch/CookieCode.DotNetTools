@@ -20,15 +20,19 @@ namespace CookieCode.DotNetTools.Commands.Mongo
         }
 
         private readonly IMongoUiCommand[] _mongoUiCommands;
+        private readonly ConnectionStringService _connectionStringService;
 
-        public MongoClientCommand(IEnumerable<IMongoUiCommand> mongoUiCommands)
+        public MongoClientCommand(
+            IEnumerable<IMongoUiCommand> mongoUiCommands,
+            ConnectionStringService connectionStringService)
         {
             _mongoUiCommands = mongoUiCommands.ToArray();
+            _connectionStringService = connectionStringService;
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings, CancellationToken cancellationToken)
         {
-            await MongoUiCommandSettings.EnsureConnectionStringAsync(settings);
+            await _connectionStringService.EnsureConnectionStringAsync("mongo", settings);
             var mongoClientCommand = SelectMongoClient(settings);
             await mongoClientCommand.ExecuteAsync(context, settings, cancellationToken);            
 

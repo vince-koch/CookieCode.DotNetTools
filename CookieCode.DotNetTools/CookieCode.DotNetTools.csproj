@@ -7,6 +7,7 @@
         <PackageId>CookieCode.DotNetTools</PackageId>
         <Version>0.1.2.0</Version>
         <Nullable>enable</Nullable>
+        <UserSecretsId>f09e2aad-98ce-46fd-8c76-b0f3ec2dd8f5</UserSecretsId>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -38,6 +39,10 @@
         <PackageReference Include="Ignore" Version="0.2.1" />
         <!-- <PackageReference Include="Ignore" Version="0.2.1" /> -->
         <PackageReference Include="MAB.DotIgnore" Version="3.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.10" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.10" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.10" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
         <PackageReference Include="MongoDB.Driver" Version="3.5.0" />
         <PackageReference Include="NuGet.Protocol" Version="6.14.0" />

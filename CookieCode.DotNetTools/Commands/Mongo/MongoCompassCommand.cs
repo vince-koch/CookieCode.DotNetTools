@@ -17,9 +17,16 @@ namespace CookieCode.DotNetTools.Commands.Mongo
     {
         public string Name => "mongo-compass";
 
+        private readonly ConnectionStringService _connectionStringService;
+
+        public MongoCompassCommand(ConnectionStringService connectionStringService)
+        {
+            _connectionStringService = connectionStringService;
+        }
+
         public override async Task<int> ExecuteAsync(CommandContext context, MongoUiCommandSettings settings, CancellationToken cancellationToken)
         {
-            await MongoUiCommandSettings.EnsureConnectionStringAsync(settings);
+            await _connectionStringService.EnsureConnectionStringAsync("mongo", settings);
             await StartMongoCompassAsync(settings);
             return 0;
         }

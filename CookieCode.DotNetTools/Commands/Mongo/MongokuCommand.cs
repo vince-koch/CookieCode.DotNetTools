@@ -1,10 +1,12 @@
-﻿using MongoDB.Driver;
-using Spectre.Console.Cli;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet.Models;
+using MongoDB.Driver;
+using Spectre.Console.Cli;
 
 namespace CookieCode.DotNetTools.Commands.Mongo
 {
@@ -15,16 +17,23 @@ namespace CookieCode.DotNetTools.Commands.Mongo
     [Description("Starts an instance of mongoku")]
     internal class MongokuCommand : AsyncCommand<MongoUiCommandSettings>, IMongoUiCommand
     {
+        private readonly ConnectionStringService _connectionStringService;
+
         public string Name => "mongoku";
+
+        public MongokuCommand(ConnectionStringService connectionStringService)
+        {
+            _connectionStringService = connectionStringService;
+        }
 
         public override async Task<int> ExecuteAsync(CommandContext context, MongoUiCommandSettings settings, CancellationToken cancellationToken)
         {
-            await MongoUiCommandSettings.EnsureConnectionStringAsync(settings);
-            await StartMongoExpress(settings);
+            await _connectionStringService.EnsureConnectionStringAsync("mongo", settings);
+            await StartMongokuAsync(settings);
             return 0;
         }
 
-        private static async Task StartMongoExpress(MongoUiCommandSettings settings)
+        private static async Task StartMongokuAsync(MongoUiCommandSettings settings)
         {
             ArgumentNullException.ThrowIfNull(settings.ConnectionString);
 
@@ -35,17 +44,25 @@ namespace CookieCode.DotNetTools.Commands.Mongo
 
             var builder = new MongoUrlBuilder(settings.ConnectionString);
 
+            var hostPort = DockerUtil.GetNextPort();
+
             var create = await DockerUtil.CreateContainerAsync(
                 imageName: mongoku_image_name,
                 imagePort: mongoku_container_port,
                 environment: new Dictionary<string, string?>
                 {
                     ["MONGOKU_DEFAULT_HOST"] = settings.ConnectionString.Replace("localhost", "host.docker.internal"),
+                    ["MONGOKU_SERVER_ORIGIN"] = $"http://localhost:{hostPort}",
                     //["MONGOKU_AUTH_BASIC"] = $"{mongoku_username}:{mongoku_password}",
+                },
+                parameters =>
+                {
+                    var key = $"{mongoku_container_port}/tcp";
+                    parameters.HostConfig.PortBindings[key].First().HostPort = hostPort.ToString();
                 });
 
             var inspect = await DockerUtil.StartContainerAsync(create.ID);
-            var hostPort = await DockerUtil.GetMappedPortAsync(mongoku_container_port, create, inspect);
+            //var hostPortCheck = await DockerUtil.GetMappedPortAsync(mongoku_container_port, create, inspect);
             await DockerUtil.WaitForPortAsync("localhost", hostPort, timeoutSeconds: 30);
 
             BrowserUtil.OpenUrl(

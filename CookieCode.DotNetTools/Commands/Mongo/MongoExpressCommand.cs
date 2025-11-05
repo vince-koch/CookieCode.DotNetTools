@@ -15,16 +15,23 @@ namespace CookieCode.DotNetTools.Commands.Mongo
     [Description("Starts an instance of mongo-express")]
     internal class MongoExpressCommand : AsyncCommand<MongoUiCommandSettings>, IMongoUiCommand
     {
+        private readonly ConnectionStringService _connectionStringService;
+
         public string Name => "mongo-express";
+
+        public MongoExpressCommand(ConnectionStringService connectionStringService)
+        {
+            _connectionStringService = connectionStringService;
+        }
 
         public override async Task<int> ExecuteAsync(CommandContext context, MongoUiCommandSettings settings, CancellationToken cancellationToken)
         {
-            await MongoUiCommandSettings.EnsureConnectionStringAsync(settings);
-            await StartMongoExpress(settings);
+            await _connectionStringService.EnsureConnectionStringAsync("mongo", settings);
+            await StartMongoExpressAsync(settings);
             return 0;
         }
 
-        private static async Task StartMongoExpress(MongoUiCommandSettings settings)
+        private static async Task StartMongoExpressAsync(MongoUiCommandSettings settings)
         {
             ArgumentNullException.ThrowIfNull(settings.ConnectionString);
 
