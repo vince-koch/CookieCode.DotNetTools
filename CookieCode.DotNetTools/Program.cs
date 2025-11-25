@@ -31,7 +31,8 @@ namespace CookieCode.DotNetTools
                     .AddSingleton<ConnectionStringService>()
                     .AddScoped<IMongoUiCommand, MongoCompassCommand>()
                     .AddScoped<IMongoUiCommand, MongoExpressCommand>()
-                    .AddScoped<IMongoUiCommand, MongokuCommand>();
+                    .AddScoped<IMongoUiCommand, MongokuCommand>()
+                    .AddScoped<IMongoUiCommand, MongoShellCommand>();
 
                 var registrar = new SpectreTypeRegistrar(services);
 
@@ -52,6 +53,7 @@ namespace CookieCode.DotNetTools
 
                         config.AddBranch("config", config =>
                         {
+                            config.SetDescription("View and edit config files");
                             config.AddCommand<ConfigViewCommand>("view");
                             config.AddCommand<ConfigEditCommand>("edit");
                         });
@@ -65,6 +67,7 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<MongoCompassCommand>("mongo-compass");
                             config.AddCommand<MongoExpressCommand>("mongo-express");
                             config.AddCommand<MongokuCommand>("mongoku");
+                            config.AddCommand<MongoShellCommand>("shell").WithAlias("mongosh").WithAlias("sh");
                         });
 
                         config.AddBranch("nvm", config =>

@@ -13,7 +13,7 @@ namespace CookieCode.DotNetTools.Commands.Mongo
 {
     internal class DockerUtil
     {
-        private static readonly DockerClient _dockerClient = new DockerClientConfiguration(
+        public static DockerClient Client { get; } = new DockerClientConfiguration(
             new Uri(Environment.OSVersion.Platform == PlatformID.Win32NT
                 ? "npipe://./pipe/docker_engine"
                 : "unix:///var/run/docker.sock"))
@@ -27,7 +27,7 @@ namespace CookieCode.DotNetTools.Commands.Mongo
         {
             var progress = new InlineProgress();
 
-            await _dockerClient.Images.CreateImageAsync(
+            await Client.Images.CreateImageAsync(
                 new ImagesCreateParameters { FromImage = imageName },
                 null,
                 //new Progress<JSONMessage>()
@@ -68,18 +68,18 @@ namespace CookieCode.DotNetTools.Commands.Mongo
 
             configure?.Invoke(parameters);
 
-            var create = await _dockerClient.Containers.CreateContainerAsync(parameters);
+            var create = await Client.Containers.CreateContainerAsync(parameters);
 
             return create;
         }
 
         public static async Task<ContainerInspectResponse> StartContainerAsync(string containerId)
         {
-            var inspect = await _dockerClient.Containers.InspectContainerAsync(containerId);
+            var inspect = await Client.Containers.InspectContainerAsync(containerId);
             if (!inspect.State.Running)
             {
-                await _dockerClient.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
-                inspect = await _dockerClient.Containers.InspectContainerAsync(containerId);
+                await Client.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
+                inspect = await Client.Containers.InspectContainerAsync(containerId);
             }
 
             return inspect;
@@ -102,7 +102,7 @@ namespace CookieCode.DotNetTools.Commands.Mongo
             else
             {
                 // Fallback: read from the summary’s Ports list
-                var list = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true });
+                var list = await Client.Containers.ListContainersAsync(new ContainersListParameters { All = true });
                 var container = list.FirstOrDefault(c => c.ID.StartsWith(create.ID, StringComparison.OrdinalIgnoreCase));
                 var port = container?.Ports?.FirstOrDefault(p => p.PrivatePort == containerPort && p.Type == "tcp");
                 if (port?.PublicPort != null)
