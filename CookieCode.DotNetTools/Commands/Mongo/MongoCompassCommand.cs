@@ -35,25 +35,21 @@ namespace CookieCode.DotNetTools.Commands.Mongo
         {
             ArgumentNullException.ThrowIfNull(settings.ConnectionString);
 
-            string mongo_compass_image_name = "haohanyang/compass-web";
-            int mongo_compass_container_port = 8080;
-            //string? mongo_compass_username = Guid.NewGuid().ToString();
-            //string? mongo_compass_password = Guid.NewGuid().ToString();
-            string? mongo_compass_username = null;
-            string? mongo_compass_password = null;
+            string imageName = "haohanyang/compass-web:0.3.1";
+            int imagePort = 8080;
 
             var builder = new MongoUrlBuilder(settings.ConnectionString);
 
             var create = await DockerUtil.CreateContainerAsync(
-                imageName: mongo_compass_image_name,
-                imagePort: mongo_compass_container_port,
+                imageName: imageName,
+                imagePort: imagePort,
                 environment: new Dictionary<string, string?>
                 {
                     ["CW_MONGO_URI"] = settings.ConnectionString.Replace("localhost", "host.docker.internal"),
                 });
 
             var inspect = await DockerUtil.StartContainerAsync(create.ID);
-            var hostPort = await DockerUtil.GetMappedPortAsync(mongo_compass_container_port, create, inspect);
+            var hostPort = await DockerUtil.GetMappedPortAsync(imagePort, create, inspect);
             await DockerUtil.WaitForPortAsync("localhost", hostPort, timeoutSeconds: 30);
             
             // this is dumb, but we seem to have a timing issue
@@ -61,8 +57,8 @@ namespace CookieCode.DotNetTools.Commands.Mongo
 
             BrowserUtil.OpenUrl(
                 url: $"http://localhost:{hostPort}",
-                username: mongo_compass_username,
-                password: mongo_compass_password);
+                username: null,
+                password: null);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace CookieCode.DotNetTools.Commands.Mongo
 {
     internal class BrowserUtil
     {
-        public static void OpenUrl(string url, string? username, string? password)
+        public static void OpenUrl(string url, string? username = null, string? password = null)
         {
             if (string.IsNullOrWhiteSpace(url))
             {

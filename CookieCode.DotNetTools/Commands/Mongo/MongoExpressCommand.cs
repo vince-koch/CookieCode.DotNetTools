@@ -35,31 +35,32 @@ namespace CookieCode.DotNetTools.Commands.Mongo
         {
             ArgumentNullException.ThrowIfNull(settings.ConnectionString);
 
-            string mongo_express_image_name = "mongo-express";
-            int mongo_express_container_port = 8081;
-            string? mongo_express_username = Guid.NewGuid().ToString();
-            string? mongo_express_password = Guid.NewGuid().ToString();
+            string imageName = "mongo-express:1.0.2-18";
+            int imagePort = 8081;
+            string? imageUser = null;
+            string? imagePass = null;
 
             var builder = new MongoUrlBuilder(settings.ConnectionString);
 
             var create = await DockerUtil.CreateContainerAsync(
-                imageName: mongo_express_image_name,
-                imagePort: mongo_express_container_port,
+                imageName: imageName,
+                imagePort: imagePort,
                 environment: new Dictionary<string, string?>
                 {
                     ["ME_CONFIG_MONGODB_URL"] = settings.ConnectionString.Replace("localhost", "host.docker.internal"),
-                    ["ME_CONFIG_BASICAUTH_USERNAME"] = mongo_express_username,
-                    ["ME_CONFIG_BASICAUTH_PASSWORD"] = mongo_express_password,
+                    ["ME_CONFIG_BASICAUTH"] = false.ToString(),
+                    ["ME_CONFIG_BASICAUTH_USERNAME"] = imageUser,
+                    ["ME_CONFIG_BASICAUTH_PASSWORD"] = imagePass,
                 });
 
             var inspect = await DockerUtil.StartContainerAsync(create.ID);
-            var hostPort = await DockerUtil.GetMappedPortAsync(mongo_express_container_port, create, inspect);
+            var hostPort = await DockerUtil.GetMappedPortAsync(imagePort, create, inspect);
             await DockerUtil.WaitForPortAsync("localhost", hostPort, timeoutSeconds: 30);
 
             BrowserUtil.OpenUrl(
                 url: $"http://localhost:{hostPort}",
-                username: mongo_express_username,
-                password: mongo_express_password);
+                username: imageUser,
+                password: imagePass);
         }
     }
 }

@@ -143,7 +143,7 @@ namespace CookieCode.DotNetTools.Commands.Mongo
                 await Task.Delay(1000);
             }
 
-            throw new TimeoutException($"MongoMan container did not become ready on port {port} within {timeoutSeconds}s.");
+            throw new TimeoutException($"Container did not become ready on port {port} within {timeoutSeconds}s.");
         }
 
         public static int GetNextPort()

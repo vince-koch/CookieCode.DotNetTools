@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet.Models;
 using MongoDB.Driver;
 using Spectre.Console.Cli;
 
@@ -37,27 +36,27 @@ namespace CookieCode.DotNetTools.Commands.Mongo
         {
             ArgumentNullException.ThrowIfNull(settings.ConnectionString);
 
-            string mongoku_image_name = "huggingface/mongoku";
-            int mongoku_container_port = 3100;
-            string? mongoku_username = Guid.NewGuid().ToString();
-            string? mongoku_password = Guid.NewGuid().ToString();
+            string imageName = "huggingface/mongoku:2.3.0";
+            int imagePort = 3100;
+            string? imageUser = Guid.NewGuid().ToString();
+            string? imagePass = Guid.NewGuid().ToString();
 
             var builder = new MongoUrlBuilder(settings.ConnectionString);
 
             var hostPort = DockerUtil.GetNextPort();
 
             var create = await DockerUtil.CreateContainerAsync(
-                imageName: mongoku_image_name,
-                imagePort: mongoku_container_port,
+                imageName: imageName,
+                imagePort: imagePort,
                 environment: new Dictionary<string, string?>
                 {
                     ["MONGOKU_DEFAULT_HOST"] = settings.ConnectionString.Replace("localhost", "host.docker.internal"),
                     ["MONGOKU_SERVER_ORIGIN"] = $"http://localhost:{hostPort}",
-                    //["MONGOKU_AUTH_BASIC"] = $"{mongoku_username}:{mongoku_password}",
+                    //["MONGOKU_AUTH_BASIC"] = $"{imageUser}:{imagePass}",
                 },
                 parameters =>
                 {
-                    var key = $"{mongoku_container_port}/tcp";
+                    var key = $"{imagePort}/tcp";
                     parameters.HostConfig.PortBindings[key].First().HostPort = hostPort.ToString();
                 });
 
@@ -67,8 +66,8 @@ namespace CookieCode.DotNetTools.Commands.Mongo
 
             BrowserUtil.OpenUrl(
                 url: $"http://localhost:{hostPort}",
-                username: mongoku_username,
-                password: mongoku_password);
+                username: imageUser,
+                password: imagePass);
         }
     }
 }
