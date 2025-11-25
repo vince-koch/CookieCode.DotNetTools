@@ -1,17 +1,15 @@
-﻿using Docker.DotNet.Models;
-using MongoDB.Driver.Core.Configuration;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Docker.DotNet.Models;
+using Spectre.Console;
+using Spectre.Console.Cli;
 
 namespace CookieCode.DotNetTools.Commands.Mongo
 {
-    [Description("Starts an instance of mongoku")]
+    [Description("Starts an instance of mongosh")]
     internal class MongoShellCommand : AsyncCommand<MongoUiCommandSettings>, IMongoUiCommand
     {
         public string Name => "mongosh";
@@ -32,15 +30,12 @@ namespace CookieCode.DotNetTools.Commands.Mongo
 
         private async Task StartMongosh(MongoUiCommandSettings settings)
         {
-            string mongosh_image_name = "mongo:8.0";
-
-            string mongosh_connection_string = settings.ConnectionString?.Replace("localhost", "host.docker.internal")
-                ?? "mongodb://host.docker.internal:27017";
+            string imageName = "mongo:8.0";
 
             // create the container
             var create = await DockerUtil.Client.Containers.CreateContainerAsync(new CreateContainerParameters
             {
-                Image = mongosh_image_name,
+                Image = imageName,
                 Cmd = new[] { "sleep", "infinity" }, // idle container to exec into
                 Tty = true,
                 OpenStdin = true,
@@ -53,7 +48,7 @@ namespace CookieCode.DotNetTools.Commands.Mongo
                 },
             });
 
-            await InvokeMongoshAsync(create, mongosh_connection_string);
+            await InvokeMongoshAsync(create, settings.ConnectionString.ThrowIfNull().Replace("localhost", "host.docker.internal"));
 
             await DockerUtil.Client.Containers.RemoveContainerAsync(
                 create.ID,

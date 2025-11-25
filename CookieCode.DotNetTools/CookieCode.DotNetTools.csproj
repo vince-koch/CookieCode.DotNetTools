@@ -5,7 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ApplicationIcon>cookie.ico</ApplicationIcon>
     <PackageId>CookieCode.DotNetTools</PackageId>
-    <Version>0.1.7.0</Version>
+    <Version>0.1.8.0</Version>
     <Nullable>enable</Nullable>
     <UserSecretsId>f09e2aad-98ce-46fd-8c76-b0f3ec2dd8f5</UserSecretsId>
   </PropertyGroup>

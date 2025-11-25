@@ -38,10 +38,8 @@ namespace CookieCode.DotNetTools.Commands.Mongo
 
             string imageName = "huggingface/mongoku:2.3.0";
             int imagePort = 3100;
-            string? imageUser = Guid.NewGuid().ToString();
-            string? imagePass = Guid.NewGuid().ToString();
-
-            var builder = new MongoUrlBuilder(settings.ConnectionString);
+            string? imageUser = null;
+            string? imagePass = null;
 
             var hostPort = DockerUtil.GetNextPort();
 

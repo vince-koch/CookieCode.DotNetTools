@@ -67,7 +67,7 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<MongoCompassCommand>("mongo-compass");
                             config.AddCommand<MongoExpressCommand>("mongo-express");
                             config.AddCommand<MongokuCommand>("mongoku");
-                            config.AddCommand<MongoShellCommand>("shell").WithAlias("mongosh").WithAlias("sh");
+                            config.AddCommand<MongoShellCommand>("mongosh").WithAlias("shell").WithAlias("sh");
                         });
 
                         config.AddBranch("nvm", config =>
