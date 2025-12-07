@@ -26,7 +26,10 @@ namespace CookieCode.DotNetTools.Commands.Mongo
             IEnumerable<IMongoUiCommand> mongoUiCommands,
             ConnectionStringService connectionStringService)
         {
-            _mongoUiCommands = mongoUiCommands.ToArray();
+            _mongoUiCommands = mongoUiCommands
+                .OrderBy(c => c.Name)
+                .ToArray();
+
             _connectionStringService = connectionStringService;
         }
 
@@ -52,8 +55,6 @@ namespace CookieCode.DotNetTools.Commands.Mongo
                     return mongoClientCommand;
                 }
             }
-
-            var clients = new string[] { "mongoman", "mongo-compass", "mongo-express" };
 
             var selected = AnsiConsole.Prompt(
                 new SelectionPrompt<IMongoUiCommand>()

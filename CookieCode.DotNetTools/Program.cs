@@ -29,9 +29,12 @@ namespace CookieCode.DotNetTools
                 var services = new ServiceCollection()
                     .AddSingleton<IConfiguration>(configuration)
                     .AddSingleton<ConnectionStringService>()
+                    .AddScoped<IMongoUiCommand, DbGateCommand>()
                     .AddScoped<IMongoUiCommand, MongoCompassCommand>()
                     .AddScoped<IMongoUiCommand, MongoExpressCommand>()
+                    .AddScoped<IMongoUiCommand, MongoGuiCommand>()
                     .AddScoped<IMongoUiCommand, MongokuCommand>()
+                    .AddScoped<IMongoUiCommand, MongoManCommand>()
                     .AddScoped<IMongoUiCommand, MongoShellCommand>();
 
                 var registrar = new SpectreTypeRegistrar(services);
@@ -66,6 +69,7 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<MongoClientCommand>("client").WithAlias("ui");
                             config.AddCommand<MongoCompassCommand>("mongo-compass");
                             config.AddCommand<MongoExpressCommand>("mongo-express");
+                            config.AddCommand<MongoGuiCommand>("mongo-gui");
                             config.AddCommand<MongokuCommand>("mongoku");
                             config.AddCommand<MongoShellCommand>("mongosh").WithAlias("shell").WithAlias("sh");
                         });

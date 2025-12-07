@@ -51,6 +51,7 @@ namespace CookieCode.DotNetTools.Commands.Mongo
                     ["ME_CONFIG_BASICAUTH"] = false.ToString(),
                     ["ME_CONFIG_BASICAUTH_USERNAME"] = imageUser,
                     ["ME_CONFIG_BASICAUTH_PASSWORD"] = imagePass,
+                    ["ME_CONFIG_MONGODB_SSLVALIDATE"] = "false",
                 });
 
             var inspect = await DockerUtil.StartContainerAsync(create.ID);
