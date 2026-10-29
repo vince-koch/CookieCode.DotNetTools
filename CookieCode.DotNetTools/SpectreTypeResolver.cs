@@ -1,32 +1,39 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
+using System;
+using System.Threading.Tasks;
 
-namespace CookieCode.DotNetTools;
-
-public sealed class SpectreTypeResolver : ITypeResolver, IDisposable
+namespace CookieCode.DotNetTools
 {
-    private readonly IServiceProvider _provider;
-
-    public SpectreTypeResolver(IServiceProvider provider)
+    internal class SpectreTypeResolver : ITypeResolver, IDisposable, IAsyncDisposable
     {
-        _provider = provider ?? throw new ArgumentNullException(nameof(provider));
-    }
+        private readonly AsyncServiceScope _scope;
 
-    public object? Resolve(Type? type)
-    {
-        if (type == null)
+        public SpectreTypeResolver(AsyncServiceScope scope)
         {
-            return null;
+            _scope = scope;
         }
 
-        return _provider.GetService(type);
-    }
-
-    public void Dispose()
-    {
-        if (_provider is IDisposable disposable)
+        public void Dispose()
         {
-            disposable.Dispose();
+            _scope.Dispose();
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            return _scope.DisposeAsync();
+        }
+
+        public object? Resolve(Type? type)
+        {
+            if (type == null)
+            {
+                return null;
+            }
+
+            var value = _scope.ServiceProvider.GetService(type);
+
+            return value;
         }
     }
 }

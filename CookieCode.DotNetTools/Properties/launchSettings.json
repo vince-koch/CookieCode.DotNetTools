@@ -2,7 +2,7 @@
   "profiles": {
     "CookieCode.DotNetTools": {
         "commandName": "Project",
-        "commandLineArgs": "mongo client",
+        "commandLineArgs": "",
         "workingDirectory": ".\\"
     }
   }

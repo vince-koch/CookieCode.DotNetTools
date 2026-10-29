@@ -53,7 +53,9 @@ namespace CookieCode.DotNetTools.Utilities
             SourceCacheContext cache = new SourceCacheContext();
             ////SourceRepository repository = Repository.Factory.GetCoreV3("https://api.nuget.org/v3/index.json");
             SourceRepository repository = Repository.Factory.GetCoreV3(packageSource.Location);
-            FindPackageByIdResource resource = await repository.GetResourceAsync<FindPackageByIdResource>();
+            FindPackageByIdResource? resource = await repository.GetResourceAsync<FindPackageByIdResource>();
+            ArgumentNullException.ThrowIfNull(resource);
+
             IEnumerable<NuGetVersion> versions = await resource.GetAllVersionsAsync(packageId, cache, logger, cancellationToken);
 
             return versions.ToArray();

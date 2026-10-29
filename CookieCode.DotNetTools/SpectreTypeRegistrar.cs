@@ -1,40 +1,57 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Spectre.Console.Cli;
+using System;
 
-namespace CookieCode.DotNetTools;
-
-public sealed class SpectreTypeRegistrar : ITypeRegistrar
+namespace CookieCode.DotNetTools
 {
-    private readonly IServiceCollection _builder;
-
-    public SpectreTypeRegistrar(IServiceCollection builder)
+    public class SpectreTypeRegistrar : ITypeRegistrar
     {
-        _builder = builder;
-    }
+        private readonly IHostApplicationBuilder _builder;
+        private readonly Func<IHostApplicationBuilder, IHost> _build;
 
-    public ITypeResolver Build()
-    {
-        return new SpectreTypeResolver(_builder.BuildServiceProvider());
-    }
+        public IHost? Host { get; private set; }
 
-    public void Register(Type service, Type implementation)
-    {
-        _builder.AddSingleton(service, implementation);
-    }
-
-    public void RegisterInstance(Type service, object implementation)
-    {
-        _builder.AddSingleton(service, implementation);
-    }
-
-    public void RegisterLazy(Type service, Func<object> func)
-    {
-        if (func is null)
+        internal SpectreTypeRegistrar(
+            IHostApplicationBuilder builder,
+            Func<IHostApplicationBuilder, IHost> build)
         {
-            throw new ArgumentNullException(nameof(func));
+            _builder = builder;
+            _build = build;
         }
 
-        _builder.AddSingleton(service, (provider) => func());
+        public ITypeResolver Build()
+        {
+            if (Host == null)
+            {
+                _builder.ConfigureContainer(new DefaultServiceProviderFactory(new ServiceProviderOptions
+                {
+                    ValidateOnBuild = false,
+                    ValidateScopes = true,  // keep scope validation at least
+                }));
+
+                Host = _build(_builder);
+            }
+
+            var scope = Host.Services.CreateAsyncScope();
+            var typeResolver = new SpectreTypeResolver(scope);
+            return typeResolver;
+        }
+
+        public void Register(Type service, Type implementation)
+        {
+            _builder.Services.TryAddScoped(service, implementation);
+        }
+
+        public void RegisterInstance(Type service, object implementation)
+        {
+            _builder.Services.TryAddScoped(service, sp => implementation);
+        }
+
+        public void RegisterLazy(Type service, Func<object> factory)
+        {
+            _builder.Services.TryAddScoped(service, sp => factory());
+        }
     }
 }

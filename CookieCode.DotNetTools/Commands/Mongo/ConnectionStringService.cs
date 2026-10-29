@@ -138,13 +138,17 @@ namespace CookieCode.DotNetTools.Commands.Mongo
                     ? root.GetProperty(settings.Section)
                     : root;
 
+                var connectionStrings = section.TryGetProperty("ConnectionStrings", out JsonElement connectionStringsNode)
+                    ? connectionStringsNode 
+                    : section;
+
                 var serializerOptions = new JsonSerializerOptions
                 {
                     AllowTrailingCommas = true,
                     ReadCommentHandling = JsonCommentHandling.Skip,
                 };
 
-                var connections = section.Deserialize<ConnectionStrings>(serializerOptions) ?? throw new Exception("Unable to parse file or section");
+                var connections = connectionStrings.Deserialize<ConnectionStrings>(serializerOptions) ?? throw new Exception("Unable to parse file or section");
 
                 return connections;
             }

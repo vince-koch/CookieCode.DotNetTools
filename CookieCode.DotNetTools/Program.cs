@@ -1,15 +1,20 @@
 ﻿using CookieCode.DotNetTools.Commands.Alias;
 using CookieCode.DotNetTools.Commands.Config;
+using CookieCode.DotNetTools.Commands.Editor;
 using CookieCode.DotNetTools.Commands.Mongo;
 using CookieCode.DotNetTools.Commands.Nvm;
 using CookieCode.DotNetTools.Commands.Source;
 using CookieCode.DotNetTools.Commands.Zip;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.Metrics;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -26,7 +31,9 @@ namespace CookieCode.DotNetTools
                     .AddUserSecrets<Program>()
                     .Build();
 
-                var services = new ServiceCollection()
+                var builder = new SpectreApplicationBuilder();
+                
+                builder.Services
                     .AddSingleton<IConfiguration>(configuration)
                     .AddSingleton<ConnectionStringService>()
                     .AddScoped<IMongoUiCommand, DbGateCommand>()
@@ -37,11 +44,9 @@ namespace CookieCode.DotNetTools
                     .AddScoped<IMongoUiCommand, MongoManCommand>()
                     .AddScoped<IMongoUiCommand, MongoShellCommand>();
 
-                var registrar = new SpectreTypeRegistrar(services);
+                EditorCommand.AddServices(builder);
 
-                var app = new CommandApp(registrar);
-
-                app.Configure(config =>
+                builder.CommandApp.Configure(config =>
                     {
                         config.PropagateExceptions();
 
@@ -60,6 +65,8 @@ namespace CookieCode.DotNetTools
                             config.AddCommand<ConfigViewCommand>("view");
                             config.AddCommand<ConfigEditCommand>("edit");
                         });
+
+                        config.AddCommand<EditorCommand>("editor").WithAlias("edit");
 
                         config.AddBranch("mongo", config =>
                         {
@@ -96,7 +103,7 @@ namespace CookieCode.DotNetTools
                         config.AddCommand<SpectreVersionCommand>("version");
                     });
 
-                var exitCode = await app.RunAsync(args);
+                var exitCode = await builder.Build().RunAsync(args);
 
                 return exitCode;
             }

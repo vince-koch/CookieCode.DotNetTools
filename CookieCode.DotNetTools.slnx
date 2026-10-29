@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="CookieCode.DotNetTools/CookieCode.DotNetTools.csproj" />
+  <Project Path="MAB.DotIgnore/MAB.DotIgnore.csproj" />
+</Solution>
